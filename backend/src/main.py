@@ -26,8 +26,17 @@ app.register_blueprint(agendamento_bp, url_prefix='/api')
 app.register_blueprint(historico_compra_bp, url_prefix='/api')
 app.register_blueprint(lembrete_bp, url_prefix='/api')
 
-# Configuração do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.getenv('DB_USERNAME', 'crm_user')}:{os.getenv('DB_PASSWORD', 'Apollo47')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '3306')}/{os.getenv('DB_NAME', 'crm_sistema')}"
+# Configuração do banco de dados - PostgreSQL para Render
+database_url = os.getenv('DATABASE_URL')
+if database_url:
+    # Render fornece DATABASE_URL, mas pode começar com postgres://
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Fallback para desenvolvimento local
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USERNAME', 'crm_user')}:{os.getenv('DB_PASSWORD', 'Apollo47')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'crm_sistema')}"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():
