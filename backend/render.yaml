@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: crm-system
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      cd ../frontend && npm install --legacy-peer-deps
+      npm run build
+      cd ../backend
+      cp -r ../frontend/dist/* src/static/
+    startCommand: gunicorn src.main:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DB_USERNAME
+        value: crm_user
+      - key: DB_PASSWORD
+        value: Apollo47
+      - key: DB_HOST
+        value: localhost
+      - key: DB_PORT
+        value: 3306
+      - key: DB_NAME
+        value: crm_sistema 

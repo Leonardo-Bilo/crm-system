@@ -114,11 +114,11 @@ function Dashboard() {
     try {
       setLoadingResumo(true)
       // Carregar resumo
-      const resumoResponse = await fetch('http://localhost:5000/api/relatorios/resumo')
+      const resumoResponse = await fetch('/api/relatorios/resumo')
       if (!resumoResponse.ok) throw new Error('HTTP ' + resumoResponse.status)
       const resumoData = await resumoResponse.json()
       // Carregar dados de agendamentos
-      const agendamentosResponse = await fetch('http://localhost:5000/api/relatorios/agendamentos')
+      const agendamentosResponse = await fetch('/api/relatorios/agendamentos')
       if (!agendamentosResponse.ok) throw new Error('HTTP ' + agendamentosResponse.status)
       const agendamentosData = await agendamentosResponse.json()
       const agendamentos = agendamentosData.dados || []
@@ -127,7 +127,7 @@ function Dashboard() {
       const agendamentosCancelados = agendamentos.filter(a => a.status === 'cancelado').length
       
       // Carregar dados de vendas para calcular quantidade total
-      const vendasResponse = await fetch('http://localhost:5000/api/relatorios/vendas')
+      const vendasResponse = await fetch('/api/relatorios/vendas')
       if (!vendasResponse.ok) throw new Error('HTTP ' + vendasResponse.status)
       const vendasData = await vendasResponse.json()
       const vendas = vendasData.dados || []
@@ -159,7 +159,7 @@ function Dashboard() {
       }
       const dataInicio = new Date(anoSelecionado, mesSelecionado, 1)
       const dataFim = new Date(anoSelecionado, mesSelecionado + 1, 0, 23, 59, 59)
-      const vendasPeriodoResponse = await fetch(`http://localhost:5000/api/relatorios/vendas-periodo?data_inicio=${formatarDataParaAPI(dataInicio)}&data_fim=${formatarDataParaAPI(dataFim)}`)
+      const vendasPeriodoResponse = await fetch(`/api/relatorios/vendas-periodo?data_inicio=${formatarDataParaAPI(dataInicio)}&data_fim=${formatarDataParaAPI(dataFim)}`)
       if (!vendasPeriodoResponse.ok) throw new Error('HTTP ' + vendasPeriodoResponse.status)
       let vendasPeriodoData = await vendasPeriodoResponse.json()
       if (!Array.isArray(vendasPeriodoData)) vendasPeriodoData = []
@@ -640,7 +640,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
 
   const carregarCategorias = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/categorias')
+      const response = await fetch('/api/categorias')
       const data = await response.json()
       setCategorias(data)
     } catch (error) {
@@ -650,7 +650,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
 
   const carregarHistoricoCompras = async (clienteId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/historico-compras?cliente_id=${clienteId}`)
+      const response = await fetch(`/api/historico-compras?cliente_id=${clienteId}`)
       const data = await response.json()
       setHistoricoCompras(data || [])
     } catch (error) {
@@ -681,7 +681,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
       
       // Se for um cliente existente, deletar do backend
       try {
-        const response = await fetch(`http://localhost:5000/api/historico-compras/${compraId}`, {
+        const response = await fetch(`/api/historico-compras/${compraId}`, {
           method: 'DELETE'
         })
         if (response.ok) {
@@ -702,8 +702,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
     
     try {
       const url = cliente 
-        ? `http://localhost:5000/api/clientes/${cliente.id}`
-        : 'http://localhost:5000/api/clientes'
+        ? `/api/clientes/${cliente.id}`
+        : '/api/clientes'
       
       const method = cliente ? 'PUT' : 'POST'
       
@@ -736,7 +736,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
               observacoes: compra.observacoes
             }
             
-            await fetch('http://localhost:5000/api/historico-compras', {
+            await fetch('/api/historico-compras', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -807,8 +807,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
       
       // Se for um cliente existente, salvar normalmente
       const url = compraEditando 
-        ? `http://localhost:5000/api/historico-compras/${compraEditando.id}`
-        : 'http://localhost:5000/api/historico-compras'
+        ? `/api/historico-compras/${compraEditando.id}`
+        : '/api/historico-compras'
       
       const method = compraEditando ? 'PUT' : 'POST'
       
@@ -1144,7 +1144,7 @@ function ClientesList() {
   const carregarClientes = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`http://localhost:5000/api/clientes?busca=${busca}`)
+      const response = await fetch(`/api/clientes?busca=${busca}`)
       const data = await response.json()
       setClientes(data.clientes || [])
     } catch (error) {
@@ -1158,7 +1158,7 @@ function ClientesList() {
   const deletarCliente = async (id) => {
     if (confirm('Tem certeza que deseja deletar este cliente?')) {
       try {
-        await fetch(`http://localhost:5000/api/clientes/${id}`, {
+        await fetch(`/api/clientes/${id}`, {
           method: 'DELETE'
         })
         carregarClientes()
@@ -1180,7 +1180,7 @@ function ClientesList() {
 
   const exportarExcel = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/relatorios/exportar/clientes/excel')
+      const response = await fetch('/api/relatorios/exportar/clientes/excel')
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -1198,7 +1198,7 @@ function ClientesList() {
 
   const exportarPDF = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/relatorios/exportar/clientes/pdf')
+      const response = await fetch('/api/relatorios/exportar/clientes/pdf')
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -1222,7 +1222,7 @@ function ClientesList() {
     const formData = new FormData()
     formData.append('file', file)
     try {
-      const response = await fetch('http://localhost:5000/api/clientes/importar-excel', {
+      const response = await fetch('/api/clientes/importar-excel', {
         method: 'POST',
         body: formData
       })
@@ -1462,7 +1462,7 @@ function Agendamentos() {
   const carregarAgendamentos = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`http://localhost:5000/api/agendamentos?busca=${busca}`)
+      const response = await fetch(`/api/agendamentos?busca=${busca}`)
       const data = await response.json()
       setAgendamentos(data || [])
     } catch (error) {
@@ -1475,7 +1475,7 @@ function Agendamentos() {
 
   const carregarClientes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/clientes')
+      const response = await fetch('/api/clientes')
       const data = await response.json()
       setClientes(data.clientes || [])
     } catch (error) {
@@ -1489,8 +1489,8 @@ function Agendamentos() {
     
     try {
       const url = agendamentoEditando 
-        ? `http://localhost:5000/api/agendamentos/${agendamentoEditando.id}`
-        : 'http://localhost:5000/api/agendamentos'
+        ? `/api/agendamentos/${agendamentoEditando.id}`
+        : '/api/agendamentos'
       
       const method = agendamentoEditando ? 'PUT' : 'POST'
       
@@ -1534,7 +1534,7 @@ function Agendamentos() {
   const deletarAgendamento = async (id) => {
     if (confirm('Tem certeza que deseja deletar este agendamento?')) {
       try {
-        await fetch(`http://localhost:5000/api/agendamentos/${id}`, {
+        await fetch(`/api/agendamentos/${id}`, {
           method: 'DELETE'
         })
         carregarAgendamentos()
@@ -1889,7 +1889,7 @@ function Lembretes() {
   const carregarLembretes = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`http://localhost:5000/api/lembretes?busca=${busca}`)
+      const response = await fetch(`/api/lembretes?busca=${busca}`)
       const data = await response.json()
       
       // Garantir que os lembretes tenham os campos corretos
@@ -1913,8 +1913,8 @@ function Lembretes() {
     
     try {
       const url = lembreteEditando 
-        ? `http://localhost:5000/api/lembretes/${lembreteEditando.id}`
-        : 'http://localhost:5000/api/lembretes'
+        ? `/api/lembretes/${lembreteEditando.id}`
+        : '/api/lembretes'
       
       const method = lembreteEditando ? 'PUT' : 'POST'
       
@@ -1957,7 +1957,7 @@ function Lembretes() {
   const deletarLembrete = async (id) => {
     if (confirm('Tem certeza que deseja deletar este lembrete?')) {
       try {
-        await fetch(`http://localhost:5000/api/lembretes/${id}`, {
+        await fetch(`/api/lembretes/${id}`, {
           method: 'DELETE'
         })
         carregarLembretes()
@@ -1995,7 +1995,7 @@ function Lembretes() {
 
   const marcarComoConcluido = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/lembretes/${id}`, {
+      const response = await fetch(`/api/lembretes/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -2314,9 +2314,9 @@ function Relatorios() {
     try {
       setLoading(true)
       const [vendasRes, agendamentosRes, lembretesRes] = await Promise.all([
-        fetch('http://localhost:5000/api/relatorios/vendas'),
-        fetch('http://localhost:5000/api/relatorios/agendamentos'),
-        fetch('http://localhost:5000/api/relatorios/lembretes')
+        fetch('/api/relatorios/vendas'),
+        fetch('/api/relatorios/agendamentos'),
+        fetch('/api/relatorios/lembretes')
       ])
 
       const [vendas, agendamentos, lembretes] = await Promise.all([
@@ -2341,7 +2341,7 @@ function Relatorios() {
     const data_inicio = `${ano}-01-01`
     const data_fim = `${ano}-12-31`
     try {
-      const res = await fetch(`http://localhost:5000/api/relatorios/vendas-periodo?data_inicio=${data_inicio}&data_fim=${data_fim}`)
+      const res = await fetch(`/api/relatorios/vendas-periodo?data_inicio=${data_inicio}&data_fim=${data_fim}`)
       let data = await res.json()
       data = data.sort((a, b) => new Date(a.data) - new Date(b.data))
       setVendasPeriodo(data)
