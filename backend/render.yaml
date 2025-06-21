@@ -5,7 +5,9 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      cd ../frontend && npm install --legacy-peer-deps
+      cd ../frontend
+      cp package.prod.json package.json
+      npm install --legacy-peer-deps
       npm run build
       cd ../backend
       cp -r ../frontend/dist/* src/static/
