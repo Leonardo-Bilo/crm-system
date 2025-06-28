@@ -224,32 +224,28 @@ function Dashboard() {
 
   if (loadingResumo || loadingVendas) {
     return (
-      <div className="p-8">
+      <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
         <div className="mb-8 w-full flex flex-col items-center sm:items-start">
           <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
               <Home className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">
-              Dashboard
-            </h1>
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">Dashboard</h2>
           </div>
           <p className="text-gray-400 text-lg w-full text-center sm:text-left">Visão geral do seu negócio</p>
         </div>
 
         {/* Loading apenas nos cards, mantendo header visível */}
-        {(loadingResumo || loadingVendas) ? (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
-              <CardContent className="flex flex-col items-center justify-center h-full">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 flex items-center justify-center mb-4 animate-spin">
-                  <Home className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-white text-lg">Carregando dashboard...</div>
-              </CardContent>
-            </Card>
-          </div>
-        ) : null}
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
+            <CardContent className="flex flex-col items-center justify-center h-full">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 flex items-center justify-center mb-4 animate-spin">
+                <Home className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-white text-lg">Carregando dashboard...</div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
@@ -258,12 +254,10 @@ function Dashboard() {
     <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
       <div className="mb-8 w-full flex flex-col items-center sm:items-start">
         <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
             <Home className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">
-            Dashboard
-          </h1>
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">Dashboard</h2>
         </div>
         <p className="text-gray-400 text-lg w-full text-center sm:text-left">Visão geral do seu negócio</p>
       </div>
@@ -1350,72 +1344,77 @@ function ClientesList() {
           </Card>
       ) : (
           clientes.map((cliente) => (
-            <Card key={cliente.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-green-500/40 hover:shadow-green-500/20 transition-all duration-300 hover:shadow-xl group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={cliente.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-green-500/50 hover:shadow-xl hover:shadow-green-500/10 transition-all duration-300 hover:scale-[1.02]">
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{cliente.nome}</CardTitle>
-                    <CardDescription className="text-indigo-400 font-medium group-hover:text-indigo-300 transition-colors">{cliente.email}</CardDescription>
-                  </div>
-                  <div className="flex space-x-1 sm:opacity-100 opacity-100 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => abrirFormularioEdicao(cliente)}
-                      className="text-gray-400 hover:text-white"
+                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
+                  </div>
+                  <div className="flex-1 text-center min-w-0">
+                    <CardTitle className="text-lg font-bold text-white group-hover:text-green-300 transition-colors truncate">{cliente.nome}</CardTitle>
+                    <CardDescription className="text-indigo-400 font-medium group-hover:text-indigo-300 transition-colors text-sm font-mono">{cliente.email}</CardDescription>
+                  </div>
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => deletarCliente(cliente.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
+                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {/* Telefone e Endereço em destaque no topo */}
-                <div className="flex flex-col gap-1 mb-4">
-                  <div className="flex items-center text-sm text-emerald-400">
+              <CardContent className="space-y-4">
+                {/* Badges com Melhor Design */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {cliente.categoria && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
+                      <Tag className="w-3 h-3 inline mr-1" />
+                      {cliente.categoria.nome}
+                    </Badge>
+                  )}
+                  {cliente.valor_total_compras > 0 && (
+                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 font-medium shadow-lg shadow-green-500/20">
+                      <DollarSign className="w-3 h-3 inline mr-1" />
+                      R$ {cliente.valor_total_compras.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </Badge>
+                  )}
+                  {cliente.quantidade_total_compras > 0 && (
+                    <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 font-medium shadow-lg shadow-blue-500/20">
+                      <ShoppingCart className="w-3 h-3 inline mr-1" />
+                      {cliente.quantidade_total_compras} compra{cliente.quantidade_total_compras > 1 ? 's' : ''}
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Informações de Contato - Destaque */}
+                <div className="text-center p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/20">
+                  <div className="flex items-center justify-center text-sm text-emerald-400 mb-2">
                     <Phone className="w-4 h-4 mr-2" />
                     {cliente.telefone}
                   </div>
                   {cliente.endereco && (
-                    <div className="flex items-start text-sm text-sky-400">
-                      <MapPin className="w-4 h-4 mr-2 mt-0.5" />
+                    <div className="flex items-center justify-center text-sm text-sky-400">
+                      <MapPin className="w-4 h-4 mr-2" />
                       {cliente.endereco}
                     </div>
                   )}
                 </div>
-                <div className="border-b border-gray-700 my-2" />
-                  {cliente.categoria && (
-                    <div className="flex items-center text-sm text-orange-400">
-                      <Tag className="w-4 h-4 mr-2" />
-                      {cliente.categoria.nome}
-                    </div>
-                  )}
-                  {cliente.valor_total_compras > 0 && (
-                    <div className="flex items-center text-sm text-green-400 font-medium">
-                      <DollarSign className="w-4 h-4 mr-2" />
-                      R$ {cliente.valor_total_compras.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </div>
-                  )}
-                  {cliente.quantidade_total_compras > 0 && (
-                    <div className="flex items-center text-sm text-blue-400">
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      {cliente.quantidade_total_compras} compra{cliente.quantidade_total_compras > 1 ? 's' : ''}
-                    </div>
-                  )}
+                
+                {/* Datas de Compras */}
                   {cliente.datas_compras && cliente.datas_compras.length > 0 && (
-                    <div className="flex items-start text-sm text-gray-300">
-                      <CalendarIcon className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                      <div className="flex flex-col space-y-1">
-                      <span className="font-medium text-gray-200">Data de Compra:</span>
-                    <div className="flex flex-wrap gap-1">
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                    <p className="text-xs text-gray-400 mb-2 font-medium text-center">Histórico de Compras</p>
+                    <div className="flex flex-wrap gap-1 justify-center">
                           {cliente.datas_compras.map((data, index) => (
                             <Badge key={index} variant="outline" className="text-xs bg-gray-700/50 border-gray-600 text-gray-300">
                               {(() => {
@@ -1428,20 +1427,25 @@ function ClientesList() {
                               })()}
                         </Badge>
                       ))}
-                        </div>
                       </div>
                     </div>
                   )}
+                
+                {/* Notas e Observações */}
+                {(cliente.notas || cliente.observacoes) && (
+                  <div className="space-y-2">
                   {cliente.notas && (
-                    <div className="flex items-start text-sm text-gray-400">
-                      <FileText className="w-4 h-4 mr-2 mt-0.5" />
-                      <span className="line-clamp-2">{cliente.notas}</span>
+                      <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                        <p className="text-xs text-gray-400 mb-1 font-medium">Notas</p>
+                        <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{cliente.notas}</p>
                   </div>
                   )}
                   {cliente.observacoes && (
-                    <div className="flex items-start text-sm text-gray-400">
-                      <FileText className="w-4 h-4 mr-2 mt-0.5" />
-                      <span className="line-clamp-2">{cliente.observacoes}</span>
+                      <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                        <p className="text-xs text-gray-400 mb-1 font-medium">Observações</p>
+                        <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{cliente.observacoes}</p>
+                      </div>
+                    )}
                     </div>
                   )}
               </CardContent>
@@ -1654,98 +1658,107 @@ function Agendamentos() {
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
           {agendamentos.map((agendamento) => (
-            <Card key={agendamento.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={agendamento.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 hover:scale-[1.02] w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{agendamento.titulo}</CardTitle>
-                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                      <span className="text-indigo-400 font-medium">{agendamento.cliente_nome || 'Agendamento sem cliente'}</span>
-                    </CardDescription>
-                  </div>
-                  <div className="flex space-x-1 sm:opacity-100 opacity-100 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => abrirFormularioEdicao(agendamento)}
-                      className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
+                  </div>
+                  <div className="flex-1 text-center min-w-0">
+                    <CardTitle className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors truncate">{agendamento.titulo}</CardTitle>
+                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
+                      <span className="text-indigo-400 font-medium">{agendamento.cliente_nome || 'Agendamento sem cliente'}</span>
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => deletarAgendamento(agendamento.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-900/20"
+                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <CalendarIcon className="w-4 h-4 text-gray-300" />
-                  <span className="text-gray-300">
+              <CardContent className="space-y-4">
+                {/* Badges com Melhor Design */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <Badge 
+                    variant="outline" 
+                    className={`font-medium shadow-lg ${
+                      agendamento.status === 'agendado' ? 'bg-blue-900/20 text-cyan-300 border-cyan-500/30 shadow-cyan-500/20' :
+                      agendamento.status === 'concluido' ? 'bg-green-900/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                      'bg-red-900/20 text-red-300 border-red-500/30 shadow-red-500/20'
+                    }`}
+                  >
+                    {agendamento.status === 'agendado' ? '✓ Agendado' :
+                     agendamento.status === 'concluido' ? '✔ Concluído' : '✗ Cancelado'}
+                  </Badge>
+                  {agendamento.tipo && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
+                      <Tag className="w-3 h-3 inline mr-1" />
+                      {agendamento.tipo === 'reuniao' ? 'Reunião' :
+                       agendamento.tipo === 'consulta' ? 'Consulta' :
+                       agendamento.tipo === 'evento' ? 'Evento' :
+                       agendamento.tipo === 'outro' ? 'Outro' : agendamento.tipo}
+                    </Badge>
+                  )}
+                  {agendamento.local && (
+                    <Badge className="bg-sky-500/20 text-sky-300 border-sky-500/30 font-medium shadow-lg shadow-sky-500/20">
+                      <MapPin className="w-3 h-3 inline mr-1" />
+                      {agendamento.local}
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Informações principais em caixas */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20 text-center">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">Início</p>
+                    <p className="text-lg font-bold text-cyan-400">
                     {(() => {
                       try {
-                        if (!agendamento.data_agendamento) return 'Data não definida'
+                          if (!agendamento.data_agendamento) return 'Não definido'
                         const data = new Date(agendamento.data_agendamento)
                         return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
                       } catch {
                         return 'Data inválida'
                       }
                     })()}
-                  </span>
+                    </p>
                 </div>
-                {agendamento.data_fim && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="w-4 h-4 text-gray-300" />
-                    <span className="text-gray-300">
-                      Até: {(() => {
+                  <div className="p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20 text-center">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">Fim</p>
+                    <p className="text-lg font-bold text-cyan-200">
+                      {(() => {
                         try {
+                          if (!agendamento.data_fim) return 'Não definido'
                           const data = new Date(agendamento.data_fim)
                           return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
                         } catch {
                           return 'Data inválida'
                         }
                       })()}
-                    </span>
+                    </p>
                   </div>
-                )}
-                {agendamento.tipo && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Tag className="w-4 h-4 text-orange-400" />
-                    <span className="text-orange-400">
-                      {agendamento.tipo === 'reuniao' ? 'Reunião' :
-                       agendamento.tipo === 'consulta' ? 'Consulta' :
-                       agendamento.tipo === 'evento' ? 'Evento' :
-                       agendamento.tipo === 'outro' ? 'Outro' : agendamento.tipo}
-                    </span>
                   </div>
-                )}
-                {agendamento.local && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-sky-400" />
-                    <span className="text-sky-400">{agendamento.local}</span>
-                  </div>
-                )}
+                
+                {/* Descrição */}
                 {agendamento.descricao && (
-                  <p className="text-sm text-gray-300 line-clamp-2">{agendamento.descricao}</p>
-                )}
-                <div className="flex justify-between items-center pt-2">
-                  <Badge 
-                    variant="outline" 
-                    className={`${
-                      agendamento.status === 'agendado' ? 'bg-blue-900/20 text-blue-400 border-blue-800' :
-                      agendamento.status === 'concluido' ? 'bg-green-900/20 text-green-400 border-green-800' :
-                      'bg-red-900/20 text-red-400 border-red-800'
-                    }`}
-                  >
-                    {agendamento.status === 'agendado' ? 'Agendado' :
-                     agendamento.status === 'concluido' ? 'Concluído' : 'Cancelado'}
-                  </Badge>
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">Descrição</p>
+                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{agendamento.descricao}</p>
                 </div>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -2104,101 +2117,123 @@ function Lembretes() {
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
           {lembretes.map((lembrete) => (
-            <Card key={lembrete.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-yellow-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={lembrete.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-yellow-500/50 hover:shadow-xl hover:shadow-yellow-500/10 transition-all duration-300 hover:scale-[1.02]">
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{lembrete.titulo}</CardTitle>
-                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                      {lembrete.cliente_nome || 'Lembrete geral'}
-                    </CardDescription>
-                  </div>
-                  <div className="flex space-x-1 sm:opacity-100 opacity-100 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => abrirFormularioEdicao(lembrete)}
-                      className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
+                  </div>
+                  <div className="flex-1 text-center min-w-0">
+                    <CardTitle className="text-lg font-bold text-white group-hover:text-yellow-300 transition-colors truncate">{lembrete.titulo}</CardTitle>
+                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
+                      {lembrete.cliente_nome || 'Lembrete geral'}
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => deletarLembrete(lembrete.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10"
+                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-300">
-                    <CalendarIcon className="w-4 h-4 mr-2" />
+              <CardContent className="space-y-4">
+                {/* Badges com Melhor Design */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                    <Badge 
+                      variant="outline" 
+                    className={`font-medium shadow-lg ${
+                      lembrete.prioridade === 'baixa' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                      lembrete.prioridade === 'media' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
+                      lembrete.prioridade === 'alta' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30 shadow-orange-500/20' :
+                      lembrete.prioridade === 'urgente' ? 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/20' :
+                      'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                      }`}
+                    >
+                    {lembrete.prioridade === 'baixa' ? '🟢 Baixa' :
+                     lembrete.prioridade === 'media' ? '🟡 Média' :
+                     lembrete.prioridade === 'alta' ? '🟠 Alta' :
+                     lembrete.prioridade === 'urgente' ? '🔴 Urgente' : 'Média'}
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                    className={`font-medium shadow-lg ${
+                      lembrete.status === 'pendente' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
+                      lembrete.status === 'concluido' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                      lembrete.concluido ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                      'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20'
+                      }`}
+                    >
+                    {lembrete.status === 'pendente' ? '⏳ Pendente' :
+                     lembrete.status === 'concluido' ? '✅ Concluído' :
+                     lembrete.concluido ? '✅ Concluído' : '⏳ Pendente'}
+                    </Badge>
+                  {lembrete.recorrente && (
+                    <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 font-medium shadow-lg shadow-purple-500/20">
+                      <Clock className="w-3 h-3 inline mr-1" />
+                      Recorrente
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Data do Lembrete - Destaque */}
+                <div className="text-center p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg border border-yellow-500/20">
+                  <p className="text-xs text-gray-400 mb-1 font-medium">Data do Lembrete</p>
+                  <p className="text-lg font-bold text-yellow-400">
                     {(() => {
                       try {
-                        if (!lembrete.data_lembrete) return 'Data não definida'
+                        if (!lembrete.data_lembrete) return 'Não definida'
                         const data = new Date(lembrete.data_lembrete)
                         return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
                       } catch {
                         return 'Data inválida'
                       }
                     })()}
+                  </p>
+                </div>
+                
+                {/* Informações Adicionais */}
+                {lembrete.recorrente && (
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                    <p className="text-xs text-gray-400 mb-1">Intervalo</p>
+                    <p className="text-sm font-medium text-purple-400">
+                      {lembrete.intervalo_recorrencia}
+                    </p>
                   </div>
-                  <div className="flex items-center">
-                    <Badge 
-                      variant="outline" 
-                      className={`flex items-center ${
-                        lembrete.prioridade === 'baixa' ? 'bg-green-500/10 border-green-500/30 text-green-300' :
-                        lembrete.prioridade === 'media' ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300' :
-                        lembrete.prioridade === 'alta' ? 'bg-orange-500/10 border-orange-500/30 text-orange-300' :
-                        lembrete.prioridade === 'urgente' ? 'bg-red-500/10 border-red-500/30 text-red-300' :
-                        'bg-gray-500/10 border-gray-500/30 text-gray-300'
-                      }`}
-                    >
-                      {lembrete.prioridade || 'Média'}
-                    </Badge>
+                )}
+                
+                {/* Descrição */}
+                {lembrete.descricao && (
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{lembrete.descricao}</p>
                   </div>
-                  <div className="flex items-center">
-                    <Badge 
-                      variant="outline" 
-                      className={`flex items-center ${
-                        lembrete.status === 'pendente' ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-300' :
-                        lembrete.status === 'concluido' ? 'bg-green-500/10 border-green-500/30 text-green-300' :
-                        lembrete.concluido ? 'bg-green-500/10 border-green-500/30 text-green-300' :
-                        'bg-gray-500/10 border-gray-500/30 text-gray-300'
-                      }`}
-                    >
-                      {lembrete.status === 'pendente' ? 'Pendente' :
-                       lembrete.status === 'concluido' ? 'Concluído' :
-                       lembrete.concluido ? 'Concluído' : 'Pendente'}
-                    </Badge>
+                )}
+                
+                {/* Botão de Concluir */}
                     {(lembrete.status === 'pendente' || !lembrete.concluido) && (
+                  <div className="flex justify-center">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => marcarComoConcluido(lembrete.id)}
-                        className="ml-2 text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                      className="text-green-400 hover:text-green-300 hover:bg-green-500/10 transition-all"
                       >
-                        <CheckCircle className="w-4 h-4" />
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Marcar como Concluído
                       </Button>
-                    )}
-                  </div>
-                  {lembrete.descricao && (
-                    <div className="flex items-start text-sm text-gray-400">
-                      <FileText className="w-4 h-4 mr-2 mt-0.5" />
-                      <span className="line-clamp-2">{lembrete.descricao}</span>
                     </div>
                   )}
-                  {lembrete.recorrente && (
-                    <div className="flex items-center text-sm text-purple-400">
-                      <Clock className="w-4 h-4 mr-2" />
-                      Recorrente: {lembrete.intervalo_recorrencia}
-                    </div>
-                  )}
-                </div>
               </CardContent>
             </Card>
           ))}
@@ -2883,94 +2918,66 @@ function Produtos() {
         ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {produtosFiltrados.map((produto) => (
-            <Card key={produto.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-orange-500/40 transition-all duration-300 hover:shadow-xl group">
+            <Card key={produto.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 hover:scale-[1.02]">
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex gap-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-1">
                     <Button 
                       size="sm"
                       variant="ghost"
-                      onClick={() => abrirFormularioEdicao(produto)}
-                      className="text-gray-400 hover:text-white"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        abrirFormularioEdicao(produto)
+                      }}
+                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="flex-1 text-center">
-                    <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{produto.nome}</CardTitle>
-                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">{produto.codigo}</CardDescription>
+                  <div className="flex-1 text-center min-w-0">
+                    <CardTitle className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors truncate">{produto.nome}</CardTitle>
+                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">{produto.codigo}</CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1">
                     <Button 
                       size="sm"
                       variant="ghost"
-                      onClick={() => deletarProduto(produto.id)}
-                      className="text-gray-400 hover:text-red-400"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deletarProduto(produto.id)
+                      }}
+                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4 text-center">
-                {/* Descrição */}
-                {produto.descricao && (
-                  <p className="text-gray-300 text-sm leading-relaxed">{produto.descricao}</p>
-                )}
-                
-                {/* Informações principais */}
-                <div className="grid grid-cols-2 gap-4 p-3 bg-gray-700/30 rounded-lg">
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400 mb-1">Preço de Venda</p>
-                    <p className="text-lg font-bold text-green-400">
-                      R$ {produto.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400 mb-1">Estoque</p>
-                    <p className={`text-lg font-bold ${produto.estoque_atual > 0 ? 'text-blue-400' : 'text-red-400'}`}>
-                      {produto.estoque_atual} {pluralizarUnidade(produto.unidade_medida || 'Unidade', produto.estoque_atual)}
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Informações financeiras */}
-                <div className="space-y-2 p-3 bg-gray-700/20 rounded-lg">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Custo:</span>
-                    <span className="text-red-400 font-medium">R$ {produto.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Lucro:</span>
-                    <span className="text-green-400 font-medium">R$ {produto.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Margem:</span>
-                    <span className="text-yellow-400 font-medium">{produto.margem_lucro?.toFixed(1)}%</span>
-                  </div>
-                </div>
-                
-                {/* Badges */}
+              <CardContent className="space-y-4">
+                {/* Badges com Melhor Design */}
                 <div className="flex flex-wrap gap-2 justify-center">
+                  {/* Status */}
                   {produto.status && (
                     <Badge className={`${
-                      produto.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                      produto.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-lg shadow-green-500/20' :
                       produto.status === 'inativo' ? 'bg-gray-500/20 text-gray-300 border-gray-500/30' :
-                      produto.status === 'esgotado' ? 'bg-red-500/20 text-red-300 border-red-500/30' :
+                      produto.status === 'esgotado' ? 'bg-red-500/20 text-red-300 border-red-500/30 shadow-lg shadow-red-500/20' :
                       'bg-gray-500/20 text-gray-300 border-gray-500/30'
-                    }`}>
-                      {produto.status === 'ativo' ? 'Ativo' : 
-                       produto.status === 'inativo' ? 'Inativo' : 
-                       produto.status === 'esgotado' ? 'Esgotado' : produto.status}
+                    } font-medium`}>
+                      {produto.status === 'ativo' ? '✓ Ativo' : 
+                       produto.status === 'inativo' ? '○ Inativo' : 
+                       produto.status === 'esgotado' ? '⚠ Esgotado' : produto.status}
                     </Badge>
                   )}
+                  {/* Categoria */}
                   {produto.categoria && (
                     <Badge 
-                      className="border-purple-500/30"
+                      className="border-purple-500/30 font-medium shadow-lg"
                       style={{ 
                         backgroundColor: `${produto.categoria.cor}20`, 
                         color: produto.categoria.cor,
-                        borderColor: `${produto.categoria.cor}30`
+                        borderColor: `${produto.categoria.cor}30`,
+                        boxShadow: `${produto.categoria.cor}20 0 4px 12px`
                       }}
                     >
                       <div className="flex items-center gap-1">
@@ -2982,38 +2989,89 @@ function Produtos() {
                       </div>
                     </Badge>
                   )}
+                  {/* Destaque */}
                   {produto.destaque && (
-                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
-                      Destaque
+                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 font-medium shadow-lg shadow-yellow-500/20">
+                      ⭐ Destaque
+                    </Badge>
+                  )}
+                  {/* Estoque Baixo */}
+                  {produto.estoque_baixo && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
+                      ⚠ Estoque Baixo
                     </Badge>
                   )}
                 </div>
                 
-                {/* Informações adicionais */}
-                {(produto.fornecedor || produto.tempo_entrega) && (
-                  <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-700/50">
-                    {produto.fornecedor && (
-                      <div className="flex items-center gap-1 justify-center">
-                        <Truck className="w-3 h-3" />
-                        <span>{produto.fornecedor}</span>
-                      </div>
-                    )}
-                    {produto.tempo_entrega && (
-                      <div className="flex items-center gap-1 justify-center">
-                        <Clock className="w-3 h-3" />
-                        <span>{produto.tempo_entrega}</span>
-                      </div>
-                    )}
+                {/* Preço Principal - Destaque */}
+                <div className="text-center p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/20">
+                  <p className="text-xs text-gray-400 mb-1 font-medium">Preço de Venda</p>
+                  <p className="text-2xl font-bold text-green-400">
+                    R$ {produto.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                
+                {/* Grid de Informações Principais */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Estoque */}
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                    <p className="text-xs text-gray-400 mb-1">Estoque</p>
+                    <p className={`text-lg font-bold ${produto.estoque_atual > 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                      {produto.estoque_atual}
+                    </p>
+                    <p className="text-xs text-gray-500">{pluralizarUnidade(produto.unidade_medida || 'Unidade', produto.estoque_atual)}</p>
+                  </div>
+                  
+                  {/* Margem de Lucro */}
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                    <p className="text-xs text-gray-400 mb-1">Margem</p>
+                    <p className={`text-lg font-bold ${produto.margem_lucro > 0 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      {produto.margem_lucro?.toFixed(1)}%
+                    </p>
+                    <p className="text-xs text-gray-500">de lucro</p>
+                  </div>
+                </div>
+                
+                {/* Informações Financeiras Detalhadas */}
+                <div className="space-y-2 p-3 bg-gray-700/10 rounded-lg border border-gray-700/20">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400 flex items-center gap-1">
+                      <DollarSign className="w-3 h-3" />
+                      Custo
+                    </span>
+                    <span className="text-red-400 font-medium">R$ {produto.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400 flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" />
+                      Lucro Unit.
+                    </span>
+                    <span className="text-green-400 font-medium">R$ {produto.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                </div>
+                
+                {/* Descrição */}
+                {produto.descricao && (
+                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{produto.descricao}</p>
                   </div>
                 )}
                 
-                {/* Observações */}
-                {produto.observacoes && (
-                  <div className="text-xs text-gray-400 pt-2 border-t border-gray-700/50">
-                    <div className="flex items-start gap-1 justify-center">
-                      <FileText className="w-3 h-3 mt-0.5" />
-                      <span className="text-center">{produto.observacoes}</span>
-                    </div>
+                {/* Informações Adicionais */}
+                {(produto.fornecedor || produto.tempo_entrega) && (
+                  <div className="text-xs text-gray-400 space-y-2 pt-3 border-t border-gray-700/50">
+                    {produto.fornecedor && (
+                      <div className="flex items-center gap-2 justify-center p-2 bg-gray-700/20 rounded-lg">
+                        <Truck className="w-3 h-3 text-blue-400" />
+                        <span className="font-medium">{produto.fornecedor}</span>
+                      </div>
+                    )}
+                    {produto.tempo_entrega && (
+                      <div className="flex items-center gap-2 justify-center p-2 bg-gray-700/20 rounded-lg">
+                        <Clock className="w-3 h-3 text-purple-400" />
+                        <span className="font-medium">{produto.tempo_entrega}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -3199,16 +3257,6 @@ function Produtos() {
                   name="fornecedor"
                   defaultValue={editingProduto?.fornecedor || ''}
                   placeholder="Nome do fornecedor"
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="observacoes" className="text-gray-300">Observações</Label>
-                <Textarea
-                  id="observacoes"
-                  name="observacoes"
-                  defaultValue={editingProduto?.observacoes || ''}
-                  placeholder="Observações adicionais sobre o produto"
                   className="bg-gray-800 border-gray-700 text-white"
                 />
               </div>
@@ -3437,7 +3485,7 @@ function Servicos() {
               Serviços
             </h1>
           </div>
-          <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus serviços</p>
+          <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus serviços oferecidos</p>
         </div>
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -3546,100 +3594,58 @@ function Servicos() {
       {/* Lista de serviços */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {servicosFiltrados.map((servico) => (
-          <Card key={servico.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-purple-500/40 transition-all duration-300 hover:shadow-xl group">
+          <Card key={servico.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:scale-[1.02]">
             <CardHeader className="pb-3">
-              <div className="flex justify-between items-start">
-                <div className="flex gap-2">
+              <div className="flex items-start justify-between">
+                <div className="flex gap-1">
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => abrirFormularioEdicao(servico)}
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:text-white hover:bg-gray-700/50"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>
-                <div className="flex-1 text-center">
-                  <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{servico.nome}</CardTitle>
-                  <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">{servico.codigo}</CardDescription>
+                <div className="flex-1 text-center min-w-0">
+                  <CardTitle className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors truncate">{servico.nome}</CardTitle>
+                  <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">{servico.codigo}</CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => deletarServico(servico.id)}
-                    className="text-gray-400 hover:text-red-400"
+                    className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 text-center">
-              {/* Descrição */}
-              {servico.descricao && (
-                <p className="text-gray-300 text-sm leading-relaxed">{servico.descricao}</p>
-              )}
-              
-              {/* Informações principais */}
-              <div className="grid grid-cols-2 gap-4 p-3 bg-gray-700/30 rounded-lg">
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 mb-1">Preço</p>
-                  <p className="text-lg font-bold text-purple-400">
-                    R$ {servico.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-400 mb-1">Duração</p>
-                  <p className="text-lg font-bold text-blue-400">
-                    {servico.tempo_entrega || 'N/A'}
-                  </p>
-                </div>
-                </div>
-              
-              {/* Informações financeiras */}
-              {(servico.custo || servico.lucro_unitario || servico.margem_lucro) && (
-                <div className="space-y-2 p-3 bg-gray-700/20 rounded-lg">
-                  {servico.custo && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Custo:</span>
-                      <span className="text-red-400 font-medium">R$ {servico.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                  )}
-                  {servico.lucro_unitario && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Lucro:</span>
-                      <span className="text-green-400 font-medium">R$ {servico.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                    </div>
-                  )}
-                  {servico.margem_lucro && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Margem:</span>
-                      <span className="text-yellow-400 font-medium">{servico.margem_lucro?.toFixed(1)}%</span>
-                    </div>
-                  )}
-                </div>
-              )}
-              
-              {/* Badges */}
+            <CardContent className="space-y-4">
+              {/* Badges com Melhor Design */}
               <div className="flex flex-wrap gap-2 justify-center">
+                {/* Status */}
                 {servico.status && (
                   <Badge className={`${
-                    servico.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                    servico.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-lg shadow-green-500/20' :
                     servico.status === 'inativo' ? 'bg-gray-500/20 text-gray-300 border-gray-500/30' :
                     'bg-gray-500/20 text-gray-300 border-gray-500/30'
-                  }`}>
-                    {servico.status === 'ativo' ? 'Ativo' : 
-                     servico.status === 'inativo' ? 'Inativo' : servico.status}
+                  } font-medium`}>
+                    {servico.status === 'ativo' ? '✓ Ativo' : 
+                     servico.status === 'inativo' ? '○ Inativo' : servico.status}
                   </Badge>
                 )}
+                {/* Categoria */}
                 {servico.categoria && (
                   <Badge 
-                    className="border-purple-500/30"
+                    className="border-purple-500/30 font-medium shadow-lg"
                     style={{ 
                       backgroundColor: `${servico.categoria.cor}20`, 
                       color: servico.categoria.cor,
-                      borderColor: `${servico.categoria.cor}30`
+                      borderColor: `${servico.categoria.cor}30`,
+                      boxShadow: `${servico.categoria.cor}20 0 4px 12px`
                     }}
                   >
                     <div className="flex items-center gap-1">
@@ -3651,28 +3657,81 @@ function Servicos() {
                     </div>
                   </Badge>
                 )}
+                {/* Destaque */}
                 {servico.destaque && (
-                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
-                    Destaque
+                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30 font-medium shadow-lg shadow-yellow-500/20">
+                    ⭐ Destaque
                   </Badge>
                 )}
               </div>
               
-              {/* Informações adicionais */}
-              {(servico.fornecedor || servico.observacoes) && (
-                <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-700/50">
-                  {servico.fornecedor && (
-                    <div className="flex items-center gap-1 justify-center">
-                      <Wrench className="w-3 h-3" />
-                      <span>{servico.fornecedor}</span>
+              {/* Preço Principal - Destaque */}
+              <div className="text-center p-4 bg-gradient-to-r from-purple-500/10 to-purple-600/5 rounded-lg border border-purple-500/20">
+                <p className="text-xs text-gray-400 mb-1 font-medium">Preço do Serviço</p>
+                <p className="text-2xl font-bold text-purple-400">
+                  R$ {servico.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+              </div>
+              
+              {/* Grid de Informações Principais */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Duração */}
+                <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                  <p className="text-xs text-gray-400 mb-1">Duração</p>
+                  <p className="text-lg font-bold text-blue-400">
+                    {servico.tempo_entrega || 'N/A'}
+                  </p>
+                  <p className="text-xs text-gray-500">tempo estimado</p>
+                </div>
+                
+                {/* Margem de Lucro */}
+                <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                  <p className="text-xs text-gray-400 mb-1">Margem</p>
+                  <p className={`text-lg font-bold ${servico.margem_lucro > 0 ? 'text-yellow-400' : 'text-red-400'}`}>
+                    {servico.margem_lucro?.toFixed(1)}%
+                  </p>
+                  <p className="text-xs text-gray-500">de lucro</p>
+                </div>
+              </div>
+              
+              {/* Informações Financeiras Detalhadas */}
+              {(servico.custo || servico.lucro_unitario) && (
+                <div className="space-y-2 p-3 bg-gray-700/10 rounded-lg border border-gray-700/20">
+                  {servico.custo && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400 flex items-center gap-1">
+                        <DollarSign className="w-3 h-3" />
+                        Custo
+                      </span>
+                      <span className="text-red-400 font-medium">R$ {servico.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
                   )}
-                  {servico.observacoes && (
-                    <div className="flex items-start gap-1 justify-center">
-                      <FileText className="w-3 h-3 mt-0.5" />
-                      <span className="text-center">{servico.observacoes}</span>
+                  {servico.lucro_unitario && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400 flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3" />
+                        Lucro Unit.
+                      </span>
+                      <span className="text-green-400 font-medium">R$ {servico.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
                   )}
+                </div>
+              )}
+              
+              {/* Descrição */}
+              {servico.descricao && (
+                <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                  <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{servico.descricao}</p>
+                </div>
+              )}
+              
+              {/* Informações Adicionais */}
+              {servico.fornecedor && (
+                <div className="text-xs text-gray-400 space-y-2 pt-3 border-t border-gray-700/50">
+                  <div className="flex items-center gap-2 justify-center p-2 bg-gray-700/20 rounded-lg">
+                    <Wrench className="w-3 h-3 text-purple-400" />
+                    <span className="font-medium">{servico.fornecedor}</span>
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -3792,15 +3851,6 @@ function Servicos() {
                     )}
                   </SelectContent>
                 </Select>
-              </div>
-              <div>
-                <Label htmlFor="observacoes" className="text-gray-300">Observações</Label>
-                <Textarea
-                  id="observacoes"
-                  name="observacoes"
-                  defaultValue={editingServico?.observacoes}
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
