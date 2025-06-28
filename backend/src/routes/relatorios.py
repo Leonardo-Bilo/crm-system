@@ -417,22 +417,42 @@ def get_vendas_periodo():
         query = HistoricoCompra.query
         
         if data_inicio:
-            query = query.filter(HistoricoCompra.data_compra >= datetime.fromisoformat(data_inicio))
+            try:
+                data_inicio_dt = datetime.fromisoformat(data_inicio)
+            except Exception:
+                data_inicio_dt = None
+            if data_inicio_dt:
+                query = query.filter(HistoricoCompra.data_compra >= data_inicio_dt)
         if data_fim:
-            query = query.filter(HistoricoCompra.data_compra <= datetime.fromisoformat(data_fim))
-        
+            try:
+                data_fim_dt = datetime.fromisoformat(data_fim)
+            except Exception:
+                data_fim_dt = None
+            if data_fim_dt:
+                query = query.filter(HistoricoCompra.data_compra <= data_fim_dt)
         vendas = query.all()
-        
         # Agrupar por data
         vendas_por_data = {}
         for venda in vendas:
-            data_str = venda.data_compra.strftime('%Y-%m-%d') if venda.data_compra else 'sem-data'
+            data_obj = venda.data_compra
+            # Se for string, tenta converter para datetime
+            if isinstance(data_obj, str):
+                try:
+                    data_obj = datetime.fromisoformat(data_obj)
+                except Exception:
+                    data_obj = None
+            # Garante que data_str seja sempre string
+            if isinstance(data_obj, datetime):
+                data_str = data_obj.strftime('%Y-%m-%d')
+            elif isinstance(data_obj, str):
+                data_str = data_obj  # já é string, usa direto
+            else:
+                data_str = 'sem-data'
             if data_str not in vendas_por_data:
                 vendas_por_data[data_str] = {'total': 0, 'quantidade': 0, 'vendas': 0}
             vendas_por_data[data_str]['total'] += float(venda.valor)
             vendas_por_data[data_str]['quantidade'] += venda.quantidade
             vendas_por_data[data_str]['vendas'] += 1  # Conta cada transação como 1 venda
-        
         dados = []
         for data, info in vendas_por_data.items():
             dados.append({
@@ -441,7 +461,6 @@ def get_vendas_periodo():
                 'quantidade': info['quantidade'],
                 'vendas': info['vendas']
             })
-        
         return jsonify(dados)
     except Exception as e:
         return jsonify({'erro': str(e)}), 500

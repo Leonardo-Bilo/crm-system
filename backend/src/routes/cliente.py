@@ -746,7 +746,7 @@ def relatorio_vendas_periodo():
         ).group_by(func.date(HistoricoCompra.data_compra)).all()
         
         return jsonify([{
-            'data': data.isoformat(),
+            'data': data.strftime('%Y-%m-%d') if hasattr(data, 'strftime') else str(data),
             'total': float(total),
             'quantidade': quantidade
         } for data, total, quantidade in vendas])

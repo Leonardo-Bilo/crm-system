@@ -19,6 +19,37 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   },
   envPrefix: ['VITE_', 'TAURI_'],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@radix-ui/react-select', '@radix-ui/react-dialog', '@radix-ui/react-popover']
+        }
+      }
+    }
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      '@radix-ui/react-select',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-popover',
+      'lucide-react',
+      'recharts'
+    ],
+    force: true
+  }
 })

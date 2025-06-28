@@ -12,6 +12,7 @@ from src.routes.relatorios import relatorios_bp
 from src.routes.agendamento import agendamento_bp
 from src.routes.historico_compra import historico_compra_bp
 from src.routes.lembrete import lembrete_bp
+from src.routes.produto import produto_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
@@ -25,18 +26,12 @@ app.register_blueprint(relatorios_bp, url_prefix='/api')
 app.register_blueprint(agendamento_bp, url_prefix='/api')
 app.register_blueprint(historico_compra_bp, url_prefix='/api')
 app.register_blueprint(lembrete_bp, url_prefix='/api')
+app.register_blueprint(produto_bp, url_prefix='/api')
 
-# Configuração do banco de dados - PostgreSQL para Render
-database_url = os.getenv('DATABASE_URL')
-if database_url:
-    # Render fornece DATABASE_URL, mas pode começar com postgres://
-    if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-else:
-    # Fallback para desenvolvimento local
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USERNAME', 'crm_user')}:{os.getenv('DB_PASSWORD', 'Apollo47')}@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME', 'crm_sistema')}"
-
+# Configuração do banco de dados - SQLite para desenvolvimento
+basedir = os.path.abspath(os.path.dirname(__file__))
+db_path = os.path.join(basedir, '..', 'instance', 'crm_sistema.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():

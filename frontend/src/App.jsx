@@ -1,25 +1,59 @@
-import { useState, useEffect } from 'react'
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/button.jsx'
-import { Input } from '@/components/ui/input.jsx'
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.jsx'
 import { Label } from '@/components/ui/label.jsx'
+import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { Calendar } from '@/components/ui/calendar.jsx'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.jsx'
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx'
-import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload } from 'lucide-react'
+import { Button } from '@/components/ui/button.jsx'
+import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload, Package, Wrench, Hammer, Truck } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Area, ComposedChart } from 'recharts'
 import './App.css'
 import logo from './assets/react.svg'
+import { Checkbox } from '@/components/ui/checkbox.jsx'
+import {
+  Select as Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem
+} from './components/ui/select.jsx'
+import * as SelectModule from './components/ui/select.jsx';
+console.log("DEBUG SELECT EXPORTS", SelectModule);
 
 // Cores para gráficos
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
+
+// Hook personalizado para gerenciar modais e prevenir problemas de foco
+function useModalState() {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const open = () => {
+    // Prevenir scroll do body quando modal abrir
+    document.body.style.overflow = 'hidden'
+    setIsOpen(true)
+  }
+  
+  const close = () => {
+    // Restaurar scroll do body quando modal fechar
+    document.body.style.overflow = 'unset'
+    setIsOpen(false)
+  }
+  
+  // Cleanup quando componente desmontar
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
+  
+  return { isOpen, open, close }
+}
 
 // Componente de navegação
 function Navigation() {
@@ -29,6 +63,8 @@ function Navigation() {
   const menuItems = [
     { path: '/', label: 'Dashboard', icon: Home },
     { path: '/clientes', label: 'Clientes', icon: Users },
+    { path: '/produtos', label: 'Produtos', icon: Package },
+    { path: '/servicos', label: 'Serviços', icon: Wrench },
     { path: '/agendamentos', label: 'Agendamentos', icon: CalendarIcon },
     { path: '/lembretes', label: 'Lembretes', icon: Bell },
     { path: '/relatorios', label: 'Relatórios', icon: BarChart3 }
@@ -191,10 +227,10 @@ function Dashboard() {
       <div className="p-8">
         <div className="mb-8 w-full flex flex-col items-center sm:items-start">
           <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
               <Home className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">
               Dashboard
             </h1>
           </div>
@@ -206,7 +242,7 @@ function Dashboard() {
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
               <CardContent className="flex flex-col items-center justify-center h-full">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center mb-4 animate-spin">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 flex items-center justify-center mb-4 animate-spin">
                   <Home className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-white text-lg">Carregando dashboard...</div>
@@ -222,10 +258,10 @@ function Dashboard() {
     <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
       <div className="mb-8 w-full flex flex-col items-center sm:items-start">
         <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
             <Home className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">
             Dashboard
           </h1>
         </div>
@@ -420,7 +456,7 @@ function Dashboard() {
                 <Area
                   type="monotone"
                   dataKey="total"
-                  stroke={false}
+                  stroke={undefined}
                   fillOpacity={1}
                   fill="url(#colorValor)"
                 />
@@ -854,7 +890,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
   return (
     <>
       <Dialog open={true} onOpenChange={onCancel}>
-        <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl">
+        <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl" onInteractOutside={e => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>
               {cliente ? 'Editar Cliente' : 'Novo Cliente'}
@@ -1029,7 +1065,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
       {/* Modal para adicionar/editar compra */}
       {mostrarNovaCompra && (
         <Dialog open={mostrarNovaCompra} onOpenChange={() => setMostrarNovaCompra(false)}>
-          <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl">
+          <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl" onInteractOutside={e => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>
                 {compraEditando ? 'Editar Compra' : 'Nova Compra'}
@@ -1243,37 +1279,32 @@ function ClientesList() {
 
   return (
     <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
-        <div className="w-full flex flex-col items-center sm:items-start">
-          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left w-full">Clientes</h2>
+      <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+        <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+          <div className="w-10 h-10 bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
+            <Users className="w-6 h-6 text-white" />
           </div>
-          <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus clientes</p>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4 sm:mt-0 justify-center sm:justify-end items-center sm:items-center">
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left flex-1">Clientes</h2>
           {/* Mobile: menu dropdown */}
           <div className="relative flex sm:hidden">
-          <Button 
-              className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-3 py-2 rounded-lg"
-              onClick={() => setMenuOpenCliente((open) => !open)}
-          >
-              <span className="sr-only">Mais opções</span>
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>
-          </Button>
-            {menuOpenCliente && (
-              <div className="fixed inset-0 z-40" onClick={() => setMenuOpenCliente(false)} />
-            )}
-            {menuOpenCliente && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
-                <button onClick={() => { exportarExcel(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><FileSpreadsheet className="w-4 h-4 mr-2" />Exportar Excel</button>
-                <button onClick={() => { inputFileRef.current && inputFileRef.current.click(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><Upload className="w-4 h-4 mr-2" />Importar Excel</button>
-                <input type="file" accept=".xlsx,.xls" ref={inputFileRef} onChange={importarExcel} style={{ display: 'none' }} />
-                <button onClick={() => { exportarPDF(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><FileText className="w-4 h-4 mr-2" />Exportar PDF</button>
-              </div>
-            )}
+            <Button 
+                className="bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-3 py-2 rounded-lg"
+                onClick={() => setMenuOpenCliente((open) => !open)}
+            >
+                <span className="sr-only">Mais opções</span>
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>
+            </Button>
+              {menuOpenCliente && (
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpenCliente(false)} />
+              )}
+              {menuOpenCliente && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
+                  <button onClick={() => { exportarExcel(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><FileSpreadsheet className="w-4 h-4 mr-2" />Exportar Excel</button>
+                  <button onClick={() => { inputFileRef.current && inputFileRef.current.click(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><Upload className="w-4 h-4 mr-2" />Importar Excel</button>
+                  <input type="file" accept=".xlsx,.xls" ref={inputFileRef} onChange={importarExcel} style={{ display: 'none' }} />
+                  <button onClick={() => { exportarPDF(); setMenuOpenCliente(false); }} className="w-full flex items-center px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"><FileText className="w-4 h-4 mr-2" />Exportar PDF</button>
+                </div>
+              )}
           </div>
           {/* Desktop: botões normais */}
           <div className="hidden sm:flex gap-2">
@@ -1282,27 +1313,29 @@ function ClientesList() {
             <input type="file" accept=".xlsx,.xls" ref={inputFileRef} onChange={importarExcel} style={{ display: 'none' }} />
             <Button onClick={exportarPDF} className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"><FileText className="w-4 h-4 mr-2" />Exportar PDF</Button>
           </div>
-          <Button 
-            onClick={abrirFormularioNovo}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-                <Plus className="w-4 h-4 mr-2" />
-                Novo Cliente
-              </Button>
         </div>
+        <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus clientes</p>
       </div>
 
-      <div className="mb-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+      {/* Barra de busca e botão adicionar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             type="text"
             placeholder="Buscar clientes..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-10 bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm"
+            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500"
           />
         </div>
+        <Button 
+          onClick={abrirFormularioNovo}
+          className="bg-green-600 hover:bg-green-700 text-white px-6"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Cliente
+        </Button>
       </div>
 
       <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
@@ -1311,13 +1344,13 @@ function ClientesList() {
             <CardContent className="flex flex-col items-center justify-center h-full">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 flex items-center justify-center mb-4 animate-spin">
                 <Users className="w-6 h-6 text-white" />
-        </div>
+              </div>
               <div className="text-white text-lg">Carregando clientes...</div>
             </CardContent>
           </Card>
       ) : (
           clientes.map((cliente) => (
-            <Card key={cliente.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={cliente.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-green-500/40 hover:shadow-green-500/20 transition-all duration-300 hover:shadow-xl group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -1329,7 +1362,7 @@ function ClientesList() {
                       variant="ghost" 
                       size="sm"
                       onClick={() => abrirFormularioEdicao(cliente)}
-                      className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                      className="text-gray-400 hover:text-white"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -1576,10 +1609,9 @@ function Agendamentos() {
 
   return (
     <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
-        <div className="w-full flex flex-col items-center sm:items-start">
-          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
+      <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+        <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+          <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-cyan-600 to-cyan-700 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
             <CalendarIcon className="w-6 h-6 text-white" />
           </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left w-full">
@@ -1588,34 +1620,32 @@ function Agendamentos() {
         </div>
           <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus compromissos</p>
       </div>
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4 sm:mt-0 justify-center sm:justify-end items-center sm:items-center">
-        <Button 
-          onClick={abrirFormularioNovo}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Agendamento
-            </Button>
-        </div>
-      </div>
 
-      <div className="mb-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+      {/* Barra de busca e botão adicionar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             type="text"
             placeholder="Buscar agendamentos..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-10 bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm"
+            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500"
           />
         </div>
+        <Button 
+          onClick={abrirFormularioNovo}
+          className="bg-cyan-600 hover:bg-cyan-700 text-white px-6"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Agendamento
+        </Button>
       </div>
 
       {loading ? (
         <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse">
           <CardContent className="flex flex-col items-center justify-center h-full">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 flex items-center justify-center mb-4 animate-spin">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 via-cyan-600 to-cyan-700 flex items-center justify-center mb-4 animate-spin">
               <CalendarIcon className="w-6 h-6 text-white" />
         </div>
             <div className="text-white text-lg">Carregando agendamentos...</div>
@@ -1624,7 +1654,7 @@ function Agendamentos() {
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
           {agendamentos.map((agendamento) => (
-            <Card key={agendamento.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={agendamento.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -1724,7 +1754,7 @@ function Agendamentos() {
 
       {dialogAberto && (
         <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
-          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle className="text-xl text-white">
                 {agendamentoEditando ? 'Editar Agendamento' : 'Novo Agendamento'}
@@ -2029,46 +2059,43 @@ function Lembretes() {
 
   return (
     <div className="p-2 sm:p-4 md:p-8 max-w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
-        <div className="w-full flex flex-col items-center sm:items-start">
-          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg border border-white/10 header-icon-circle">
+      <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+        <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
             <Bell className="w-6 h-6 text-white" />
-                </div>
+          </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight text-center sm:text-left w-full">
             Lembretes
           </h1>
-                </div>
-        <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie suas tarefas e lembretes</p>
-              </div>
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mt-4 sm:mt-0 justify-center sm:justify-end items-center sm:items-center">
-        <Button 
-          onClick={abrirFormularioNovo}
-          className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Lembrete
-        </Button>
         </div>
-              </div>
-              
-      <div className="mb-2">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <Input
+        <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie suas tarefas e lembretes</p>
+      </div>
+
+      {/* Barra de busca e botão adicionar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
             type="text"
             placeholder="Buscar lembretes..."
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            className="pl-10 bg-gray-800/50 border-gray-700/50 text-gray-200 placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm"
-                />
-              </div>
+            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-yellow-500 focus:ring-yellow-500"
+          />
+        </div>
+        <Button 
+          onClick={abrirFormularioNovo}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-6"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Lembrete
+        </Button>
       </div>
 
       {loading ? (
         <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse">
           <CardContent className="flex flex-col items-center justify-center h-full">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center mb-4 animate-spin">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center mb-4 animate-spin">
               <Bell className="w-6 h-6 text-white" />
         </div>
             <div className="text-white text-lg">Carregando lembretes...</div>
@@ -2077,7 +2104,7 @@ function Lembretes() {
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
           {lembretes.map((lembrete) => (
-            <Card key={lembrete.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/70 transition-all duration-300 hover:shadow-xl hover:shadow-gray-900/20 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
+            <Card key={lembrete.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-yellow-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 group w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -2180,7 +2207,7 @@ function Lembretes() {
 
       {dialogAberto && (
         <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
-          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle className="text-xl text-white">
                 {lembreteEditando ? 'Editar Lembrete' : 'Novo Lembrete'}
@@ -2363,7 +2390,7 @@ function Relatorios() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
         <div className="w-full flex flex-col items-center sm:items-start">
           <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+          <div className="w-10 h-10 bg-gradient-to-br from-red-700 via-red-800 to-red-900 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
             <BarChart3 className="w-6 h-6 text-white" />
         </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
@@ -2378,7 +2405,7 @@ function Relatorios() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
             <CardContent className="flex flex-col items-center justify-center h-full">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-4 animate-spin">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-800 via-red-900 to-red-950 flex items-center justify-center mb-4 animate-spin">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div className="text-white text-lg">Carregando relatórios...</div>
@@ -2536,7 +2563,7 @@ function Relatorios() {
                     <Area
                       type="monotone"
                       dataKey="total"
-                      stroke={false}
+                      stroke={undefined}
                       fillOpacity={1}
                       fill="url(#colorValor)"
                     />
@@ -2546,6 +2573,1273 @@ function Relatorios() {
             </Card>
           </div>
         </>
+      )}
+    </div>
+  )
+}
+
+// Componente de Produtos
+function Produtos() {
+  const [produtos, setProdutos] = useState([])
+  const [categoriasProduto, setCategoriasProduto] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [busca, setBusca] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [editingProduto, setEditingProduto] = useState(null)
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState(null)
+
+  useEffect(() => {
+    carregarProdutos()
+    carregarCategorias()
+  }, [])
+
+  const carregarProdutos = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/produtos?tipo=produto')
+      if (!response.ok) {
+        throw new Error('Erro ao carregar produtos')
+      }
+      const data = await response.json()
+      setProdutos(data.produtos || [])
+    } catch (error) {
+      console.error('Erro ao carregar produtos:', error)
+      setProdutos([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const carregarCategorias = async () => {
+    try {
+      const response = await fetch('/api/categorias-produto')
+      if (!response.ok) {
+        throw new Error('Erro ao carregar categorias')
+      }
+      const data = await response.json()
+      // Filtrar apenas categorias de produtos (IDs 1-36)
+      const categoriasFiltradas = data.filter(cat => cat.id >= 1 && cat.id <= 36)
+      setCategoriasProduto(categoriasFiltradas)
+    } catch (error) {
+      console.error('Erro ao carregar categorias:', error)
+      setCategoriasProduto([])
+    }
+  }
+
+  const produtosFiltrados = produtos.filter(produto =>
+    produto.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    produto.codigo.toLowerCase().includes(busca.toLowerCase())
+  )
+
+  const totalProdutos = produtos.length
+  const produtosAtivos = produtos.filter(p => p.status === 'ativo').length
+  const valorTotal = produtos.reduce((acc, p) => acc + p.valor_venda, 0)
+  const categorias = [...new Set(produtos.map(p => p.categoria?.nome))].length
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    
+    const produtoData = {
+      nome: formData.get('nome'),
+      codigo: formData.get('codigo'),
+      descricao: formData.get('descricao'),
+      valor_venda: parseFloat(formData.get('preco')),
+      custo: parseFloat(formData.get('custo') || 0),
+      fornecedor: formData.get('fornecedor'),
+      estoque_atual: parseInt(formData.get('estoque') || 0),
+      estoque_minimo: parseInt(formData.get('estoque_minimo') || 0),
+      unidade_medida: formData.get('unidade_medida'),
+      tempo_entrega: formData.get('tempo_entrega'),
+      status: formData.get('status'),
+      destaque: formData.get('destaque') === 'on',
+      categoria_id: formData.get('categoria') ? parseInt(formData.get('categoria')) : null,
+      tipo: 'produto'
+    }
+
+    try {
+      const url = editingProduto 
+        ? `/api/produtos/${editingProduto.id}` 
+        : '/api/produtos'
+      
+      const method = editingProduto ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(produtoData)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao salvar produto')
+      }
+
+      await carregarProdutos()
+      setShowForm(false)
+      setEditingProduto(null)
+    } catch (error) {
+      console.error('Erro ao salvar produto:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingProduto(null)
+  }
+
+  const deletarProduto = async (id) => {
+    if (!confirm('Tem certeza que deseja deletar este produto?')) return
+    
+    try {
+      const response = await fetch(`/api/produtos/${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao deletar produto')
+      }
+      
+      await carregarProdutos()
+    } catch (error) {
+      console.error('Erro ao deletar produto:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  const abrirFormularioNovo = () => {
+    setEditingProduto(null)
+    setShowForm(true)
+  }
+
+  const abrirFormularioEdicao = (produto) => {
+    setEditingProduto(produto)
+    setShowForm(true)
+  }
+
+  const criarCategoriasPadrao = async () => {
+    try {
+      const response = await fetch('/api/categorias-produto/criar-padrao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao criar categorias padrão')
+      }
+      
+      const result = await response.json()
+      alert(`✅ ${result.mensagem}\n\n📊 Categorias criadas: ${result.categorias_criadas}\n📊 Categorias existentes: ${result.categorias_existentes}\n📊 Total: ${result.total_categorias}`)
+      
+      // Recarregar categorias após criar
+      await carregarCategorias()
+    } catch (error) {
+      console.error('Erro ao criar categorias padrão:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  // Opções para o React Select
+  const opcoesCategorias = categoriasProduto.map(cat => ({
+    value: cat.id,
+    label: cat.nome,
+    color: cat.cor
+  }));
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+              Produtos
+            </h1>
+          </div>
+          <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seu catálogo de produtos</p>
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
+            <CardContent className="flex flex-col items-center justify-center h-full">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 flex items-center justify-center mb-4 animate-spin">
+                <Package className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-white text-lg">Carregando produtos...</div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-8">
+      <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+              <Package className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+            Produtos
+            </h1>
+          </div>
+        <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seu catálogo de produtos</p>
+      </div>
+
+      {/* Barra de busca e botão adicionar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            type="text"
+            placeholder="Buscar produtos..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-orange-500"
+          />
+        </div>
+        <Button onClick={abrirFormularioNovo} className="bg-orange-600 hover:bg-orange-700 text-white px-6">
+          <Plus className="w-4 h-4 mr-2" />
+          Adicionar Produto
+          </Button>
+      </div>
+
+      {/* Cards de estatísticas */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+        <div>
+                <p className="text-sm text-orange-300">Total de Produtos</p>
+                <p className="text-2xl font-bold text-orange-400">{produtos.length}</p>
+        </div>
+              <Package className="w-8 h-8 text-orange-400" />
+        </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+        <div>
+                <p className="text-sm text-blue-300">Valor Total</p>
+                <p className="text-2xl font-bold text-blue-400">
+                  R$ {produtos.reduce((acc, p) => acc + (p.valor_venda * p.estoque_atual), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+        </div>
+              <DollarSign className="w-8 h-8 text-blue-400" />
+        </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+        <div>
+                <p className="text-sm text-orange-300">Em Estoque</p>
+                <p className="text-2xl font-bold text-orange-400">
+                  {produtos.filter(p => p.estoque_atual > 0).length}
+                </p>
+        </div>
+              <TrendingUp className="w-8 h-8 text-orange-400" />
+      </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20 hover:border-red-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-red-300">Sem Estoque</p>
+                <p className="text-2xl font-bold text-red-400">
+                  {produtos.filter(p => p.estoque_atual === 0).length}
+                </p>
+        </div>
+              <AlertTriangle className="w-8 h-8 text-red-400" />
+        </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Lista de produtos */}
+      {produtosFiltrados.length === 0 ? (
+        <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Package className="w-16 h-16 text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-300 mb-2">Nenhum produto encontrado</h3>
+            <p className="text-gray-400">Comece adicionando seu primeiro produto</p>
+            </CardContent>
+          </Card>
+        ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {produtosFiltrados.map((produto) => (
+            <Card key={produto.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-orange-500/40 transition-all duration-300 hover:shadow-xl group">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => abrirFormularioEdicao(produto)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{produto.nome}</CardTitle>
+                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">{produto.codigo}</CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => deletarProduto(produto.id)}
+                      className="text-gray-400 hover:text-red-400"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4 text-center">
+                {/* Descrição */}
+                {produto.descricao && (
+                  <p className="text-gray-300 text-sm leading-relaxed">{produto.descricao}</p>
+                )}
+                
+                {/* Informações principais */}
+                <div className="grid grid-cols-2 gap-4 p-3 bg-gray-700/30 rounded-lg">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400 mb-1">Preço de Venda</p>
+                    <p className="text-lg font-bold text-green-400">
+                      R$ {produto.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400 mb-1">Estoque</p>
+                    <p className={`text-lg font-bold ${produto.estoque_atual > 0 ? 'text-blue-400' : 'text-red-400'}`}>
+                      {produto.estoque_atual} {pluralizarUnidade(produto.unidade_medida || 'Unidade', produto.estoque_atual)}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Informações financeiras */}
+                <div className="space-y-2 p-3 bg-gray-700/20 rounded-lg">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Custo:</span>
+                    <span className="text-red-400 font-medium">R$ {produto.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Lucro:</span>
+                    <span className="text-green-400 font-medium">R$ {produto.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Margem:</span>
+                    <span className="text-yellow-400 font-medium">{produto.margem_lucro?.toFixed(1)}%</span>
+                  </div>
+                </div>
+                
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {produto.status && (
+                    <Badge className={`${
+                      produto.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                      produto.status === 'inativo' ? 'bg-gray-500/20 text-gray-300 border-gray-500/30' :
+                      produto.status === 'esgotado' ? 'bg-red-500/20 text-red-300 border-red-500/30' :
+                      'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                    }`}>
+                      {produto.status === 'ativo' ? 'Ativo' : 
+                       produto.status === 'inativo' ? 'Inativo' : 
+                       produto.status === 'esgotado' ? 'Esgotado' : produto.status}
+                    </Badge>
+                  )}
+                  {produto.categoria && (
+                    <Badge 
+                      className="border-purple-500/30"
+                      style={{ 
+                        backgroundColor: `${produto.categoria.cor}20`, 
+                        color: produto.categoria.cor,
+                        borderColor: `${produto.categoria.cor}30`
+                      }}
+                    >
+                      <div className="flex items-center gap-1">
+                        <div 
+                          className="w-2 h-2 rounded-full" 
+                          style={{ backgroundColor: produto.categoria.cor }}
+                        ></div>
+                        {produto.categoria.nome || produto.categoria}
+                      </div>
+                    </Badge>
+                  )}
+                  {produto.destaque && (
+                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+                      Destaque
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Informações adicionais */}
+                {(produto.fornecedor || produto.tempo_entrega) && (
+                  <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-700/50">
+                    {produto.fornecedor && (
+                      <div className="flex items-center gap-1 justify-center">
+                        <Truck className="w-3 h-3" />
+                        <span>{produto.fornecedor}</span>
+                      </div>
+                    )}
+                    {produto.tempo_entrega && (
+                      <div className="flex items-center gap-1 justify-center">
+                        <Clock className="w-3 h-3" />
+                        <span>{produto.tempo_entrega}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Observações */}
+                {produto.observacoes && (
+                  <div className="text-xs text-gray-400 pt-2 border-t border-gray-700/50">
+                    <div className="flex items-start gap-1 justify-center">
+                      <FileText className="w-3 h-3 mt-0.5" />
+                      <span className="text-center">{produto.observacoes}</span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+                  </div>
+      )}
+
+      {/* Modal de formulário */}
+      {showForm && (
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-white">
+                {editingProduto ? 'Editar Produto' : 'Novo Produto'}
+              </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                {editingProduto ? 'Atualize as informações do produto' : 'Preencha as informações do novo produto'}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                <Label htmlFor="nome" className="text-gray-300">Nome</Label>
+                <Input
+                  id="nome"
+                  name="nome"
+                  defaultValue={editingProduto?.nome}
+                  required
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                  </div>
+                  <div>
+                <Label htmlFor="codigo" className="text-gray-300">Código</Label>
+                <Input
+                  id="codigo"
+                  name="codigo"
+                  defaultValue={editingProduto?.codigo}
+                  required
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                  </div>
+                  <div>
+                <Label htmlFor="descricao" className="text-gray-300">Descrição</Label>
+                <Textarea
+                  id="descricao"
+                  name="descricao"
+                  defaultValue={editingProduto?.descricao}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                  <div>
+                  <Label htmlFor="preco" className="text-gray-300">Preço de Venda</Label>
+                  <Input
+                    id="preco"
+                    name="preco"
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingProduto?.valor_venda}
+                    required
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  </div>
+                  <div>
+                  <Label htmlFor="custo" className="text-gray-300">Custo</Label>
+                  <Input
+                    id="custo"
+                    name="custo"
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingProduto?.custo}
+                    required
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  </div>
+                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                  <div>
+                  <Label htmlFor="estoque" className="text-gray-300">Estoque</Label>
+                  <Input
+                    id="estoque"
+                    name="estoque"
+                    type="number"
+                    defaultValue={editingProduto?.estoque_atual}
+                    required
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  </div>
+                  <div>
+                  <Label htmlFor="unidade_medida" className="text-gray-300">Unidade de Medida</Label>
+                  <Select name="unidade_medida" defaultValue={editingProduto?.unidade_medida || 'Unidade'}>
+                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectValue placeholder="Selecione a unidade" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="Unidade" className="text-white hover:bg-gray-700">Unidade</SelectItem>
+                      <SelectItem value="Kg" className="text-white hover:bg-gray-700">Quilograma (Kg)</SelectItem>
+                      <SelectItem value="g" className="text-white hover:bg-gray-700">Grama (g)</SelectItem>
+                      <SelectItem value="Litro" className="text-white hover:bg-gray-700">Litro (L)</SelectItem>
+                      <SelectItem value="ml" className="text-white hover:bg-gray-700">Mililitro (ml)</SelectItem>
+                      <SelectItem value="Metro" className="text-white hover:bg-gray-700">Metro (m)</SelectItem>
+                      <SelectItem value="cm" className="text-white hover:bg-gray-700">Centímetro (cm)</SelectItem>
+                      <SelectItem value="Caixa" className="text-white hover:bg-gray-700">Caixa</SelectItem>
+                      <SelectItem value="Pacote" className="text-white hover:bg-gray-700">Pacote</SelectItem>
+                      <SelectItem value="Par" className="text-white hover:bg-gray-700">Par</SelectItem>
+                      <SelectItem value="Conjunto" className="text-white hover:bg-gray-700">Conjunto</SelectItem>
+                      <SelectItem value="Rolo" className="text-white hover:bg-gray-700">Rolo</SelectItem>
+                      <SelectItem value="Fardo" className="text-white hover:bg-gray-700">Fardo</SelectItem>
+                      <SelectItem value="Dúzia" className="text-white hover:bg-gray-700">Dúzia</SelectItem>
+                      <SelectItem value="Quilate" className="text-white hover:bg-gray-700">Quilate</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  </div>
+                </div>
+                    <div>
+                <Label htmlFor="tempo_entrega" className="text-gray-300">Tempo de Entrega</Label>
+                <Input
+                  id="tempo_entrega"
+                  name="tempo_entrega"
+                  type="text"
+                  defaultValue={editingProduto?.tempo_entrega || ''}
+                  placeholder="Ex: 2 dias, 5 dias úteis, imediato"
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                    </div>
+              <div className="grid grid-cols-2 gap-4">
+                    <div>
+                  <Label htmlFor="status" className="text-gray-300">Status</Label>
+                  <Select
+                    name="status"
+                    defaultValue={editingProduto?.status || 'ativo'}
+                  >
+                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectValue placeholder="Selecione o status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="ativo" className="text-white hover:bg-gray-700">Ativo</SelectItem>
+                      <SelectItem value="inativo" className="text-white hover:bg-gray-700">Inativo</SelectItem>
+                      <SelectItem value="esgotado" className="text-white hover:bg-gray-700">Esgotado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                    </div>
+                <div className="flex items-center space-x-2">
+                  <input 
+                    type="checkbox"
+                    id="destaque" 
+                    name="destaque"
+                    defaultChecked={editingProduto?.destaque}
+                    className="w-4 h-4 text-green-600 bg-gray-800 border-gray-600 rounded focus:ring-green-500 focus:ring-2"
+                  />
+                  <Label htmlFor="destaque" className="text-gray-300">Produto em Destaque</Label>
+                    </div>
+                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="categoria" className="text-gray-300">Categoria</Label>
+                <Select
+                  name="categoria"
+                  defaultValue={editingProduto?.categoria?.id?.toString() || ''}
+                >
+                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-700">
+                    {categoriasProduto.length === 0 ? (
+                      <SelectItem value="" disabled>Nenhuma categoria disponível</SelectItem>
+                    ) : (
+                      categoriasProduto.map(cat => (
+                        <SelectItem key={cat.id} value={cat.id.toString()} className="text-white hover:bg-gray-700">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.cor }}></div>
+                            {cat.nome}
+                          </div>
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="fornecedor" className="text-gray-300">Fornecedor</Label>
+                <Input
+                  id="fornecedor"
+                  name="fornecedor"
+                  defaultValue={editingProduto?.fornecedor || ''}
+                  placeholder="Nome do fornecedor"
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <Label htmlFor="observacoes" className="text-gray-300">Observações</Label>
+                <Textarea
+                  id="observacoes"
+                  name="observacoes"
+                  defaultValue={editingProduto?.observacoes || ''}
+                  placeholder="Observações adicionais sobre o produto"
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={handleCancel} className="border-gray-600 text-gray-300">
+                  Cancelar
+          </Button>
+                <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
+                  {editingProduto ? 'Atualizar' : 'Cadastrar'}
+              </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+  )
+}
+
+// Função utilitária para pluralizar unidade
+function pluralizarUnidade(unidade, quantidade) {
+  if (!unidade) return '';
+  const plurais = {
+    'Unidade': quantidade === 1 ? 'unidade' : 'unidades',
+    'Kg': 'Kg',
+    'g': 'g',
+    'Litro': quantidade === 1 ? 'litro' : 'litros',
+    'ml': 'ml',
+    'Metro': quantidade === 1 ? 'metro' : 'metros',
+    'cm': quantidade === 1 ? 'centímetro' : 'centímetros',
+    'Caixa': quantidade === 1 ? 'caixa' : 'caixas',
+    'Pacote': quantidade === 1 ? 'pacote' : 'pacotes',
+    'Par': quantidade === 1 ? 'par' : 'pares',
+    'Conjunto': quantidade === 1 ? 'conjunto' : 'conjuntos',
+    'Rolo': quantidade === 1 ? 'rolo' : 'rolos',
+    'Fardo': quantidade === 1 ? 'fardo' : 'fardos',
+    'Dúzia': quantidade === 1 ? 'dúzia' : 'dúzias',
+    'Quilate': quantidade === 1 ? 'quilate' : 'quilates',
+    'Outros': quantidade === 1 ? 'item' : 'itens',
+  };
+  return plurais[unidade] || unidade + (quantidade === 1 ? '' : 's');
+}
+
+// Componente de Serviços
+function Servicos() {
+  const [servicos, setServicos] = useState([])
+  const [categoriasProduto, setCategoriasProduto] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [busca, setBusca] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [editingServico, setEditingServico] = useState(null)
+
+  useEffect(() => {
+    carregarServicos()
+    carregarCategorias()
+  }, [])
+
+  const carregarServicos = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/produtos?tipo=servico')
+      if (!response.ok) {
+        throw new Error('Erro ao carregar serviços')
+      }
+      const data = await response.json()
+      setServicos(data.produtos || [])
+    } catch (error) {
+      console.error('Erro ao carregar serviços:', error)
+      setServicos([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const carregarCategorias = async () => {
+    try {
+      const response = await fetch('/api/categorias-produto')
+      if (!response.ok) {
+        throw new Error('Erro ao carregar categorias')
+      }
+      const data = await response.json()
+      // Filtrar apenas categorias de serviços (IDs 37-66)
+      const categoriasFiltradas = data.filter(cat => cat.id >= 37 && cat.id <= 66)
+      setCategoriasProduto(categoriasFiltradas)
+    } catch (error) {
+      console.error('Erro ao carregar categorias:', error)
+      setCategoriasProduto([])
+    }
+  }
+
+  const servicosFiltrados = servicos.filter(servico =>
+    servico.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    servico.codigo.toLowerCase().includes(busca.toLowerCase())
+  )
+
+  const totalServicos = servicos.length
+  const servicosAtivos = servicos.filter(s => s.status === 'ativo').length
+  const valorTotal = servicos.reduce((acc, s) => acc + s.valor_venda, 0)
+  const categorias = [...new Set(servicos.map(s => s.categoria?.nome))].length
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    
+    // Obter o ID da categoria selecionada
+    const categoriaSelecionada = formData.get('categoria')
+    let categoria_id = null
+    if (categoriaSelecionada && categoriaSelecionada !== '') {
+      categoria_id = parseInt(categoriaSelecionada)
+    }
+    
+    const servicoData = {
+      nome: formData.get('nome'),
+      codigo: formData.get('codigo'),
+      descricao: formData.get('descricao'),
+      valor_venda: parseFloat(formData.get('preco')),
+      custo: parseFloat(formData.get('custo') || 0),
+      fornecedor: formData.get('fornecedor'),
+      tempo_entrega: formData.get('duracao'),
+      estoque_atual: 0,
+      estoque_minimo: 0,
+      status: formData.get('status'),
+      destaque: formData.get('destaque') === 'on',
+      categoria_id: categoria_id,
+      tipo: 'servico'
+    }
+
+    try {
+      const url = editingServico 
+        ? `/api/produtos/${editingServico.id}` 
+        : '/api/produtos'
+      
+      const method = editingServico ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(servicoData)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao salvar serviço')
+      }
+
+      await carregarServicos()
+      setShowForm(false)
+      setEditingServico(null)
+    } catch (error) {
+      console.error('Erro ao salvar serviço:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingServico(null)
+  }
+
+  const deletarServico = async (id) => {
+    if (!confirm('Tem certeza que deseja deletar este serviço?')) return
+    
+    try {
+      const response = await fetch(`/api/produtos/${id}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao deletar serviço')
+      }
+      
+      await carregarServicos()
+    } catch (error) {
+      console.error('Erro ao deletar serviço:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  const abrirFormularioNovo = () => {
+    setEditingServico(null)
+    setShowForm(true)
+  }
+
+  const abrirFormularioEdicao = (servico) => {
+    setEditingServico(servico)
+    setShowForm(true)
+  }
+
+  const criarCategoriasPadrao = async () => {
+    try {
+      const response = await fetch('/api/categorias-produto/criar-padrao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.erro || 'Erro ao criar categorias padrão')
+      }
+      
+      const result = await response.json()
+      alert(`✅ ${result.mensagem}\n\n📊 Categorias criadas: ${result.categorias_criadas}\n📊 Categorias existentes: ${result.categorias_existentes}\n📊 Total: ${result.total_categorias}`)
+      
+      // Recarregar categorias após criar
+      await carregarCategorias()
+    } catch (error) {
+      console.error('Erro ao criar categorias padrão:', error)
+      alert(`Erro: ${error.message}`)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+              <Wrench className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+              Serviços
+            </h1>
+          </div>
+          <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus serviços</p>
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
+            <CardContent className="flex flex-col items-center justify-center h-full">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 flex items-center justify-center mb-4 animate-spin">
+                <Wrench className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-white text-lg">Carregando serviços...</div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-8">
+      <div className="mb-8 w-full flex flex-col items-center sm:items-start">
+        <div className="flex flex-col items-center gap-3 mb-2 sm:flex-row sm:items-center w-full">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg header-icon-circle">
+            <Wrench className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight w-full text-center sm:text-left">
+            Serviços
+          </h1>
+        </div>
+        <p className="text-gray-400 text-lg w-full text-center sm:text-left">Gerencie seus serviços oferecidos</p>
+            </div>
+            
+      {/* Barra de busca e botão adicionar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+              type="text"
+              placeholder="Buscar serviços..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
+              />
+          </div>
+        <Button onClick={abrirFormularioNovo} className="bg-purple-600 hover:bg-purple-700 text-white px-6">
+          <Plus className="w-4 h-4 mr-2" />
+          Adicionar Serviço
+        </Button>
+          </div>
+          
+      {/* Cards de estatísticas */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+            <div>
+                <p className="text-sm text-purple-300">Total de Serviços</p>
+                <p className="text-2xl font-bold text-purple-400">{servicos.length}</p>
+            </div>
+              <Wrench className="w-8 h-8 text-purple-400" />
+          </div>
+          </CardContent>
+        </Card>
+            
+        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+            <div>
+                <p className="text-sm text-blue-300">Valor Total</p>
+                <p className="text-2xl font-bold text-blue-400">
+                  R$ {servicos.reduce((acc, s) => acc + s.valor_venda, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+            </div>
+              <DollarSign className="w-8 h-8 text-blue-400" />
+          </div>
+          </CardContent>
+        </Card>
+              
+        <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20 hover:border-green-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-green-300">Ativos</p>
+                <p className="text-2xl font-bold text-green-400">
+                  {servicos.filter(s => s.status === 'ativo').length}
+                </p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+              
+        <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20 hover:border-orange-500/40 transition-all duration-300">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-orange-300">Categorias</p>
+                <p className="text-2xl font-bold text-orange-400">
+                  {new Set(servicos.map(s => s.categoria?.nome || s.categoria).filter(Boolean)).size}
+                </p>
+              </div>
+              <Tag className="w-8 h-8 text-orange-400" />
+              </div>
+          </CardContent>
+        </Card>
+            </div>
+            
+      {/* Lista de serviços */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {servicosFiltrados.map((servico) => (
+          <Card key={servico.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-purple-500/40 transition-all duration-300 hover:shadow-xl group">
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => abrirFormularioEdicao(servico)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                </div>
+                <div className="flex-1 text-center">
+                  <CardTitle className="text-lg text-white group-hover:text-gray-100 transition-colors">{servico.nome}</CardTitle>
+                  <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors">{servico.codigo}</CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => deletarServico(servico.id)}
+                    className="text-gray-400 hover:text-red-400"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4 text-center">
+              {/* Descrição */}
+              {servico.descricao && (
+                <p className="text-gray-300 text-sm leading-relaxed">{servico.descricao}</p>
+              )}
+              
+              {/* Informações principais */}
+              <div className="grid grid-cols-2 gap-4 p-3 bg-gray-700/30 rounded-lg">
+                <div className="text-center">
+                  <p className="text-xs text-gray-400 mb-1">Preço</p>
+                  <p className="text-lg font-bold text-purple-400">
+                    R$ {servico.valor_venda?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-gray-400 mb-1">Duração</p>
+                  <p className="text-lg font-bold text-blue-400">
+                    {servico.tempo_entrega || 'N/A'}
+                  </p>
+                </div>
+                </div>
+              
+              {/* Informações financeiras */}
+              {(servico.custo || servico.lucro_unitario || servico.margem_lucro) && (
+                <div className="space-y-2 p-3 bg-gray-700/20 rounded-lg">
+                  {servico.custo && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Custo:</span>
+                      <span className="text-red-400 font-medium">R$ {servico.custo?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  )}
+                  {servico.lucro_unitario && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Lucro:</span>
+                      <span className="text-green-400 font-medium">R$ {servico.lucro_unitario?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  )}
+                  {servico.margem_lucro && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-400">Margem:</span>
+                      <span className="text-yellow-400 font-medium">{servico.margem_lucro?.toFixed(1)}%</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Badges */}
+              <div className="flex flex-wrap gap-2 justify-center">
+                {servico.status && (
+                  <Badge className={`${
+                    servico.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                    servico.status === 'inativo' ? 'bg-gray-500/20 text-gray-300 border-gray-500/30' :
+                    'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                  }`}>
+                    {servico.status === 'ativo' ? 'Ativo' : 
+                     servico.status === 'inativo' ? 'Inativo' : servico.status}
+                  </Badge>
+                )}
+                {servico.categoria && (
+                  <Badge 
+                    className="border-purple-500/30"
+                    style={{ 
+                      backgroundColor: `${servico.categoria.cor}20`, 
+                      color: servico.categoria.cor,
+                      borderColor: `${servico.categoria.cor}30`
+                    }}
+                  >
+                    <div className="flex items-center gap-1">
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: servico.categoria.cor }}
+                      ></div>
+                      {servico.categoria.nome || servico.categoria}
+                    </div>
+                  </Badge>
+                )}
+                {servico.destaque && (
+                  <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">
+                    Destaque
+                  </Badge>
+                )}
+              </div>
+              
+              {/* Informações adicionais */}
+              {(servico.fornecedor || servico.observacoes) && (
+                <div className="text-xs text-gray-400 space-y-1 pt-2 border-t border-gray-700/50">
+                  {servico.fornecedor && (
+                    <div className="flex items-center gap-1 justify-center">
+                      <Wrench className="w-3 h-3" />
+                      <span>{servico.fornecedor}</span>
+                    </div>
+                  )}
+                  {servico.observacoes && (
+                    <div className="flex items-start gap-1 justify-center">
+                      <FileText className="w-3 h-3 mt-0.5" />
+                      <span className="text-center">{servico.observacoes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+          </div>
+          
+      {/* Modal de formulário */}
+      {showForm && (
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold text-white">
+                {editingServico ? 'Editar Serviço' : 'Novo Serviço'}
+              </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                {editingServico ? 'Atualize as informações do serviço' : 'Preencha as informações do novo serviço'}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <Label htmlFor="nome" className="text-gray-300">Nome</Label>
+              <Input
+                  id="nome"
+                  name="nome"
+                  defaultValue={editingServico?.nome}
+                  required
+                  className="bg-gray-800 border-gray-700 text-white"
+              />
+            </div>
+            <div>
+                <Label htmlFor="codigo" className="text-gray-300">Código</Label>
+              <Input
+                  id="codigo"
+                  name="codigo"
+                  defaultValue={editingServico?.codigo}
+                  required
+                  className="bg-gray-800 border-gray-700 text-white"
+              />
+            </div>
+          <div>
+                <Label htmlFor="descricao" className="text-gray-300">Descrição</Label>
+            <Textarea
+                  id="descricao"
+                  name="descricao"
+                  defaultValue={editingServico?.descricao}
+                  className="bg-gray-800 border-gray-700 text-white"
+            />
+          </div>
+              <div className="grid grid-cols-2 gap-4">
+            <div>
+                  <Label htmlFor="preco" className="text-gray-300">Preço</Label>
+                  <Input
+                    id="preco"
+                    name="preco"
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingServico?.valor_venda}
+                    required
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+            </div>
+                <div>
+                  <Label htmlFor="custo" className="text-gray-300">Custo</Label>
+                  <Input
+                    id="custo"
+                    name="custo"
+                    type="number"
+                    step="0.01"
+                    defaultValue={editingServico?.custo}
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+            </div>
+          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="duracao" className="text-gray-300">Duração</Label>
+                  <Input
+                    id="duracao"
+                    name="duracao"
+                    defaultValue={editingServico?.tempo_entrega}
+                    placeholder="ex: 2 horas"
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+            </div>
+                <div>
+                  <Label htmlFor="fornecedor" className="text-gray-300">Fornecedor</Label>
+                  <Input
+                    id="fornecedor"
+                    name="fornecedor"
+                    defaultValue={editingServico?.fornecedor}
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+            </div>
+          </div>
+              <div>
+                <Label htmlFor="categoria" className="text-gray-300">Categoria</Label>
+                <Select
+                  name="categoria"
+                  defaultValue={editingServico?.categoria?.id?.toString() || ''}
+                >
+                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-700">
+                    {categoriasProduto.length === 0 ? (
+                      <SelectItem value="" disabled>Nenhuma categoria disponível</SelectItem>
+                    ) : (
+                      categoriasProduto.map(cat => (
+                        <SelectItem key={cat.id} value={cat.id.toString()} className="text-white hover:bg-gray-700">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.cor }}></div>
+                            {cat.nome}
+                          </div>
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="observacoes" className="text-gray-300">Observações</Label>
+                <Textarea
+                  id="observacoes"
+                  name="observacoes"
+                  defaultValue={editingServico?.observacoes}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="status" className="text-gray-300">Status</Label>
+                  <Select
+                    name="status"
+                    defaultValue={editingServico?.status || 'ativo'}
+                  >
+                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectValue placeholder="Selecione o status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-700">
+                      <SelectItem value="ativo" className="text-white hover:bg-gray-700">Ativo</SelectItem>
+                      <SelectItem value="inativo" className="text-white hover:bg-gray-700">Inativo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input 
+                    type="checkbox"
+                    id="destaque" 
+                    name="destaque"
+                    defaultChecked={editingServico?.destaque}
+                    className="w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500 focus:ring-2"
+                  />
+                  <Label htmlFor="destaque" className="text-gray-300">Serviço em Destaque</Label>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={handleCancel} className="border-gray-600 text-gray-300">
+              Cancelar
+            </Button>
+                <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">
+                  {editingServico ? 'Atualizar' : 'Cadastrar'}
+            </Button>
+              </DialogFooter>
+        </form>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   )
@@ -2562,6 +3856,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/clientes" element={<ClientesList />} />
+              <Route path="/produtos" element={<Produtos />} />
+              <Route path="/servicos" element={<Servicos />} />
               <Route path="/agendamentos" element={<Agendamentos />} />
               <Route path="/lembretes" element={<Lembretes />} />
               <Route path="/relatorios" element={<Relatorios />} />
@@ -2575,5 +3871,9 @@ function App() {
 }
 
 export default App
+
+
+
+
 
 
