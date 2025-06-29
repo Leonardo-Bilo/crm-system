@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar.jsx'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.jsx'
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx'
 import { Button } from '@/components/ui/button.jsx'
-import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload, Package, Wrench, Hammer, Truck, Check, ChevronDown, Circle, Settings, Star } from 'lucide-react'
+import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload, Package, Wrench, Hammer, Truck, Check, ChevronDown, Circle, Settings, Star, User, Info } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Area, ComposedChart } from 'recharts'
 import './App.css'
 import logo from './assets/react.svg'
@@ -592,7 +592,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
     endereco: '',
     notas: '',
     categoria_id: null,
-    tag_ids: []
+    tag_ids: [],
+    tipo_cliente: 'Pessoa Física'
   })
   const [categorias, setCategorias] = useState([])
   const [historicoCompras, setHistoricoCompras] = useState([])
@@ -650,7 +651,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
         endereco: cliente.endereco,
         notas: cliente.notas,
          categoria_id: cliente.categoria?.id || null,
-        tag_ids: cliente.tags?.map(tag => tag.id) || []
+        tag_ids: cliente.tags?.map(tag => tag.id) || [],
+        tipo_cliente: cliente.tipo_cliente || 'Pessoa Física'
       })
       carregarHistoricoCompras(cliente.id)
     } else {
@@ -661,7 +663,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
         endereco: '',
         notas: '',
         categoria_id: null,
-        tag_ids: []
+        tag_ids: [],
+        tipo_cliente: 'Pessoa Física'
       })
       setHistoricoCompras([])
     }
@@ -777,7 +780,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
         }
         
           onSave()
-        setFormData({ nome: '', email: '', telefone: '', endereco: '', notas: '', categoria_id: null, tag_ids: [] })
+        setFormData({ nome: '', email: '', telefone: '', endereco: '', notas: '', categoria_id: null, tag_ids: [], tipo_cliente: 'Pessoa Física' })
         setHistoricoCompras([])
       } else {
         const error = await response.json()
@@ -884,83 +887,136 @@ function ClienteForm({ cliente, onSave, onCancel }) {
   return (
     <>
       <Dialog open={true} onOpenChange={onCancel}>
-        <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl" onInteractOutside={e => e.preventDefault()}>
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="bg-gray-800/95 border-gray-700/50 text-white backdrop-blur-md shadow-2xl max-w-4xl max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
+          <DialogHeader className="border-b border-gray-700 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 via-green-600 to-emerald-600 rounded-xl flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-2xl font-bold text-white">
               {cliente ? 'Editar Cliente' : 'Novo Cliente'}
             </DialogTitle>
-            <DialogDescription className="text-gray-400">
-              {cliente ? 'Atualize as informações do cliente' : 'Preencha as informações do novo cliente'}
-            </DialogDescription>
+                <DialogDescription className="text-gray-400 mt-1">
+                  {cliente ? 'Atualize as informações do cliente' : 'Preencha as informações do novo cliente'}
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-    <form onSubmit={handleSubmit} className="space-y-4">
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Seção: Informações Básicas */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                <FileText className="w-5 h-5 text-orange-400" />
+                <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
+              </div>
+              
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-                <Label htmlFor="nome">Nome</Label>
+                  <Label htmlFor="nome" className="text-gray-300 font-medium">
+                    <User className="w-4 h-4 inline mr-2 text-blue-400" />
+                    Nome Completo
+                  </Label>
           <Input
             id="nome"
             value={formData.nome}
             onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-            className="bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:bg-gray-700/70 transition-all duration-300"
+                    placeholder="Digite o nome completo do cliente"
+                    className="h-9 bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-gray-700/70 transition-all duration-300"
             required
           />
         </div>
+                
         <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-gray-300 font-medium">
+                    <Mail className="w-4 h-4 inline mr-2 text-blue-400" />
+                    Email
+                  </Label>
           <Input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="cliente@exemplo.com"
+                    className="h-9 bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-gray-700/70 transition-all duration-300"
           />
         </div>
+                
         <div className="space-y-2">
-          <Label htmlFor="telefone">Telefone</Label>
+                  <Label htmlFor="telefone" className="text-gray-300 font-medium">
+                    <Phone className="w-4 h-4 inline mr-2 text-blue-400" />
+                    Telefone
+                  </Label>
           <Input
             id="telefone"
             value={formData.telefone}
             onChange={handleTelefoneChange}
-                  className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="(11) 99999-9999"
+                    className="h-9 bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-gray-700/70 transition-all duration-300"
           />
         </div>
+                
         <div className="space-y-2">
-          <Label htmlFor="categoria">Categoria</Label>
+                  <Label htmlFor="tipo_cliente" className="text-gray-300 font-medium">
+                    <Tag className="w-4 h-4 inline mr-2 text-blue-400" />
+                    Tipo de Cliente
+                  </Label>
                 <Select
-                  value={formData.categoria_id?.toString() || ''}
-                  onValueChange={(value) => setFormData({ ...formData, categoria_id: value === '' ? null : parseInt(value) })}
+                    value={formData.tipo_cliente || ''}
+                    onValueChange={(value) => setFormData({ ...formData, tipo_cliente: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-              <SelectValue placeholder="Selecione uma categoria" />
+                    <SelectTrigger className="h-9 bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-gray-700/70 transition-all duration-300">
+                      <SelectValue placeholder="Selecione um tipo de cliente" />
             </SelectTrigger>
                   <SelectContent className="bg-gray-700 border-gray-600">
-                    {categorias.map(cat => (
-                      <SelectItem key={cat.id} value={cat.id.toString()} className="text-white hover:bg-gray-600">
-                        {cat.nome}
-                </SelectItem>
-              ))}
+                      <SelectItem value="Novo" className="text-white hover:bg-gray-600">Novo</SelectItem>
+                      <SelectItem value="Pessoa Física" className="text-white hover:bg-gray-600">Pessoa Física</SelectItem>
+                      <SelectItem value="Pessoa Jurídica" className="text-white hover:bg-gray-600">Pessoa Jurídica</SelectItem>
+                      <SelectItem value="Potencial" className="text-white hover:bg-gray-600">Potencial</SelectItem>
+                      <SelectItem value="Regular" className="text-white hover:bg-gray-600">Regular</SelectItem>
+                      <SelectItem value="VIP" className="text-white hover:bg-gray-600">VIP</SelectItem>
+                      <SelectItem value="Inadimplente" className="text-white hover:bg-gray-600">Inadimplente</SelectItem>
+                      <SelectItem value="Inativo" className="text-white hover:bg-gray-600">Inativo</SelectItem>
             </SelectContent>
           </Select>
         </div>
+              </div>
+            </div>
+
+            {/* Seção: Endereço */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                <MapPin className="w-5 h-5 text-green-400" />
+                <h3 className="text-lg font-semibold text-white">Endereço</h3>
+              </div>
+              
               <div className="space-y-2">
-                <Label htmlFor="endereco">Endereço</Label>
+                <Label htmlFor="endereco" className="text-gray-300 font-medium">
+                  <MapPin className="w-4 h-4 inline mr-2 text-green-400" />
+                  Endereço Completo
+                </Label>
                 <Input
                   id="endereco"
                   value={formData.endereco}
                   onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Rua, número, bairro, cidade - Estado"
+                  className="h-9 bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-gray-700/70 transition-all duration-300"
                 />
         </div>
       </div>
       
-            {/* Seção de Histórico de Compras */}
+            {/* Seção: Histórico de Compras */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-700">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5 text-orange-400" />
                 <h3 className="text-lg font-semibold text-white">Histórico de Compras</h3>
+                </div>
                 <Button
                   type="button"
                   onClick={() => setMostrarNovaCompra(true)}
-                  className="bg-green-600 hover:bg-green-700 text-white text-sm"
+                  className="bg-orange-500 hover:bg-orange-600 text-white text-sm h-8 px-3 transition-all duration-300"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Nova Compra
@@ -970,11 +1026,11 @@ function ClienteForm({ cliente, onSave, onCancel }) {
               {historicoCompras.length > 0 ? (
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {historicoCompras.map((compra) => (
-                    <div key={compra.id} className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
+                    <div key={compra.id} className="group flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30 hover:border-orange-500/50 hover:bg-gray-700/50 transition-all duration-300">
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-white">{compra.produto_servico}</span>
-                          <span className="text-green-400 font-semibold">
+                          <span className="text-orange-400 font-semibold">
                             R$ {compra.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                           </span>
                         </div>
@@ -1004,7 +1060,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
                           variant="ghost"
                           size="sm"
                           onClick={() => editarCompra(compra)}
-                          className="text-gray-400 hover:text-white"
+                          className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                         >
                           <Edit className="w-3 h-3" />
                         </Button>
@@ -1013,7 +1069,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
                           variant="ghost"
                           size="sm"
                           onClick={() => deletarCompra(compra.id)}
-                          className="text-gray-400 hover:text-red-400"
+                          className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                         >
                           <Trash2 className="w-3 h-3" />
                         </Button>
@@ -1029,30 +1085,45 @@ function ClienteForm({ cliente, onSave, onCancel }) {
               )}
             </div>
             
+            {/* Seção: Observações */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                <FileText className="w-5 h-5 text-purple-400" />
+                <h3 className="text-lg font-semibold text-white">Observações</h3>
+            </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="notas">Notas</Label>
+                <Label htmlFor="notas" className="text-gray-300 font-medium">
+                  <FileText className="w-4 h-4 inline mr-2 text-purple-400" />
+                  Notas e Observações
+                </Label>
               <Textarea
                 id="notas"
                 value={formData.notas}
                 onChange={(e) => setFormData({ ...formData, notas: e.target.value })}
+                  placeholder="Informações adicionais sobre o cliente, preferências, observações importantes..."
                 rows={3}
-                className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-gray-700/50 border-gray-600/50 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 focus:bg-gray-700/70 transition-all duration-300"
               />
             </div>
-            <DialogFooter>
+            </div>
+            
+            <DialogFooter className="border-t border-gray-700 pt-4">
               <Button 
                 type="button"
                 variant="outline"
                 onClick={onCancel}
-                className="bg-gray-700/50 text-white hover:bg-gray-600/70 border-gray-600/50 transition-all duration-300"
+                className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-all"
               >
+                <X className="w-4 h-4 mr-2" />
                 Cancelar
               </Button>
               <Button 
                 type="submit"
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-green-500 hover:bg-green-600 text-white transition-all"
               >
-                {cliente ? 'Salvar' : 'Criar'}
+                <Check className="w-4 h-4 mr-2" />
+                {cliente ? 'Atualizar Cliente' : 'Cadastrar Cliente'}
               </Button>
             </DialogFooter>
           </form>
@@ -1152,7 +1223,7 @@ function ClienteForm({ cliente, onSave, onCancel }) {
                 <Button 
                   type="submit"
                   className="bg-yellow-500 hover:bg-yellow-600 text-white transition-all flex-1 sm:flex-none"
-                  >
+                >
                   {compraEditando ? 'Salvar' : 'Adicionar'}
         </Button>
       </DialogFooter>
@@ -1406,12 +1477,6 @@ function ClientesList() {
               <CardContent className="space-y-4">
                 {/* Badges com Melhor Design */}
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {cliente.categoria && (
-                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
-                      <Tag className="w-3 h-3 inline mr-1" />
-                      {cliente.categoria.nome}
-                    </Badge>
-                  )}
                   {cliente.valor_total_compras > 0 && (
                     <Badge className="bg-green-500/20 text-green-300 border-green-500/30 font-medium shadow-lg shadow-green-500/20">
                       <DollarSign className="w-3 h-3 inline mr-1" />
@@ -1422,6 +1487,12 @@ function ClientesList() {
                     <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 font-medium shadow-lg shadow-blue-500/20">
                       <ShoppingCart className="w-3 h-3 inline mr-1" />
                       {cliente.quantidade_total_compras} compra{cliente.quantidade_total_compras > 1 ? 's' : ''}
+                    </Badge>
+                  )}
+                  {cliente.tipo_cliente && (
+                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
+                      <Tag className="w-3 h-3 inline mr-1" />
+                      {cliente.tipo_cliente}
                     </Badge>
                   )}
                 </div>
@@ -1713,92 +1784,91 @@ function Agendamentos() {
             </Card>
           ) : (
             agendamentos.map((agendamento) => (
-              <Card key={agendamento.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-gray-900/20">
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white mb-1 line-clamp-1">{agendamento.titulo}</h3>
-                      <p className="text-sm text-gray-400 line-clamp-1">
-                        {clientes.find(c => c.id === agendamento.cliente_id)?.nome || 'Cliente não encontrado'}
-                      </p>
-                  </div>
-                    <div className="flex gap-1 ml-2">
+              <Card key={agendamento.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 hover:scale-[1.02]">
+              <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex gap-1">
                     <Button 
+                      variant="ghost" 
                       size="sm"
-                        variant="ghost"
                       onClick={() => abrirFormularioEdicao(agendamento)}
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10"
+                        className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
-                        <Edit className="h-4 w-4" />
+                      <Edit className="w-4 h-4" />
                     </Button>
+                    </div>
+                    <div className="flex-1 text-center min-w-0">
+                      <CardTitle className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors truncate">{agendamento.titulo}</CardTitle>
+                      <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
+                        {clientes.find(c => c.id === agendamento.cliente_id)?.nome || 'Cliente não encontrado'}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-1">
                     <Button 
+                      variant="ghost" 
                       size="sm"
-                        variant="ghost"
                       onClick={() => deletarAgendamento(agendamento.id)}
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400 hover:bg-red-400/10"
+                        className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
-                        <Trash2 className="h-4 w-4" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
-
-                  <div className="space-y-2 mb-3">
-                    {/* Data e Hora */}
-                <div className="flex items-center gap-2 text-sm">
-                      <CalendarIcon className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-300">
+              </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Badges com Melhor Design */}
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    <Badge 
+                      variant="outline" 
+                      className="font-medium shadow-lg bg-cyan-500/20 text-cyan-300 border-cyan-500/30 shadow-cyan-500/20"
+                    >
+                      📅 {agendamento.tipo || 'Agendamento'}
+                    </Badge>
+                    <Badge 
+                      variant="outline" 
+                      className={`font-medium shadow-lg ${
+                        agendamento.status === 'concluido' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                        agendamento.status === 'cancelado' ? 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/20' :
+                        agendamento.status === 'adiado' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30 shadow-orange-500/20' :
+                        'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20'
+                      }`}
+                    >
+                      {agendamento.status === 'concluido' ? '✅ Concluído' :
+                       agendamento.status === 'cancelado' ? '❌ Cancelado' :
+                       agendamento.status === 'adiado' ? '⏰ Adiado' :
+                       agendamento.status === 'agendado' ? '📅 Agendado' : '⏳ Pendente'}
+                    </Badge>
+                  </div>
+                  
+                  {/* Data do Agendamento - Destaque */}
+                  <div className="text-center p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">Data do Agendamento</p>
+                    <p className="text-lg font-bold text-cyan-400">
                     {(() => {
                       try {
+                          if (!agendamento.data_agendamento) return 'Não definida'
                         const data = new Date(agendamento.data_agendamento)
                         return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
                       } catch {
                         return 'Data inválida'
                       }
                     })()}
-                      </p>
+                    </p>
                 </div>
-                    
-                    {/* Tipo */}
-                  <div className="flex items-center gap-2 text-sm">
-                      <Tag className="w-4 h-4 text-gray-400" />
-                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
-                        {agendamento.tipo || 'Não especificado'}
-                      </Badge>
-                  </div>
-                    
-                    {/* Status */}
-                  <div className="flex items-center gap-2 text-sm">
-                      <Circle className="w-4 h-4 text-gray-400" />
-                      <Badge 
-                        variant="outline" 
-                        className={`text-xs ${
-                          agendamento.status === 'concluido' 
-                            ? 'border-green-600 text-green-400' 
-                            : agendamento.status === 'cancelado'
-                            ? 'border-red-600 text-red-400'
-                            : 'border-yellow-600 text-yellow-400'
-                        }`}
-                      >
-                        {agendamento.status === 'concluido' ? 'Concluído' : 
-                         agendamento.status === 'cancelado' ? 'Cancelado' : 
-                         agendamento.status === 'agendado' ? 'Agendado' : 
-                         agendamento.status || 'Pendente'}
-                      </Badge>
-                  </div>
-                    
-                    {/* Local */}
+                  
+                  {/* Local */}
                 {agendamento.local && (
-                  <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-gray-400" />
-                        <p className="text-gray-300 line-clamp-1">{agendamento.local}</p>
+                    <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                      <p className="text-xs text-gray-400 mb-1">Local</p>
+                      <p className="text-sm font-medium text-orange-400">
+                        📍 {agendamento.local}
+                      </p>
                   </div>
                 )}
-                  </div>
-                
+                  
                   {/* Descrição */}
                 {agendamento.descricao && (
                     <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
-                      <p className="text-xs text-gray-400 mb-1 font-medium">Descrição</p>
                       <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{agendamento.descricao}</p>
                 </div>
                   )}
@@ -1832,7 +1902,7 @@ function Agendamentos() {
               {/* Seção 1: Informações Básicas */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
-                  <FileText className="w-5 h-5 text-yellow-400" />
+                  <FileText className="w-5 h-5 text-orange-400" />
                   <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
                 </div>
                 
@@ -2020,7 +2090,7 @@ function Agendamentos() {
                 </Button>
                 <Button
                   type="submit"
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white transition-all flex-1 sm:flex-none"
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                     <Check className="w-4 h-4 mr-2" />
                     {agendamentoEditando ? 'Atualizar Agendamento' : 'Criar Agendamento'}
@@ -2415,7 +2485,7 @@ function Lembretes() {
               {/* Seção 1: Informações Básicas */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
-                  <FileText className="w-5 h-5 text-yellow-400" />
+                  <FileText className="w-5 h-5 text-orange-400" />
                   <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
                 </div>
                 
@@ -2434,7 +2504,7 @@ function Lembretes() {
                       placeholder="Ex: Lembrete de Reunião, Pagamento de Conta"
                       className="h-9 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-500 focus:ring-yellow-500/20 transition-all"
                 />
-        </div>
+                  </div>
               
               <div className="space-y-2">
                     <Label htmlFor="data_lembrete" className="text-gray-300 font-medium flex items-center gap-2">
@@ -4334,7 +4404,7 @@ function Servicos() {
                       <SelectContent className="bg-gray-800 border-gray-600">
                         <SelectItem value="ativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">✅ Ativo</SelectItem>
                         <SelectItem value="inativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">⏸️ Inativo</SelectItem>
-                        <SelectItem value="encerrado" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚠️ Encerrado</SelectItem>
+                        <SelectItem value="esgotado" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚠️ Esgotado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

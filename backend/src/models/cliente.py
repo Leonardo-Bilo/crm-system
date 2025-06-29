@@ -82,6 +82,7 @@ class Cliente(db.Model):
     endereco = db.Column(db.Text, nullable=True)
     notas = db.Column(db.Text, nullable=True)
     categoria_id = db.Column(db.Integer, db.ForeignKey('categorias.id'), nullable=True)
+    tipo_cliente = db.Column(db.String(50), nullable=True)  # Novo campo para tipo de cliente
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow)
     data_atualizacao = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     ativo = db.Column(db.Boolean, default=True)
@@ -107,6 +108,7 @@ class Cliente(db.Model):
             'endereco': self.endereco,
             'notas': self.notas,
             'categoria': self.categoria.to_dict() if self.categoria else None,
+            'tipo_cliente': self.tipo_cliente,
             'tags': [tag.to_dict() for tag in self.tags],
             'data_cadastro': self.data_cadastro.isoformat() if self.data_cadastro else None,
             'data_atualizacao': self.data_atualizacao.isoformat() if self.data_atualizacao else None,
@@ -124,6 +126,7 @@ class Cliente(db.Model):
             'endereco': self.endereco,
             'notas': self.notas,
             'categoria': self.categoria.to_dict() if self.categoria else None,
+            'tipo_cliente': self.tipo_cliente,
             'tags': [tag.to_dict() for tag in self.tags],
             'data_cadastro': self.data_cadastro.isoformat() if self.data_cadastro else None,
             'data_atualizacao': self.data_atualizacao.isoformat() if self.data_atualizacao else None,

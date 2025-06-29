@@ -144,7 +144,8 @@ def criar_cliente():
             telefone=formatar_telefone(dados.get('telefone')),
             endereco=dados.get('endereco'),
             notas=dados.get('notas'),
-            categoria_id=categoria_id
+            categoria_id=categoria_id,
+            tipo_cliente=dados.get('tipo_cliente')
         )
         if dados.get('tag_ids'):
             tags = Tag.query.filter(Tag.id.in_(dados['tag_ids'])).all()
@@ -201,6 +202,8 @@ def atualizar_cliente(cliente_id):
             cliente.endereco = dados['endereco']
         if 'notas' in dados:
             cliente.notas = dados['notas']
+        if 'tipo_cliente' in dados:
+            cliente.tipo_cliente = dados['tipo_cliente']
         if 'ativo' in dados:
             cliente.ativo = dados['ativo']
         if 'tag_ids' in dados:
@@ -824,7 +827,8 @@ def importar_clientes_excel():
                 telefone=formatar_telefone(str(row[col_final['telefone']]).strip() if 'telefone' in col_final and not pd.isna(row[col_final['telefone']]) else ''),
                 endereco=str(row[col_final['endereco']]).strip() if 'endereco' in col_final and not pd.isna(row[col_final['endereco']]) else '',
                 notas=str(row[col_final['notas']]).strip() if 'notas' in col_final and not pd.isna(row[col_final['notas']]) else '',
-                categoria_id=categoria_id
+                categoria_id=categoria_id,
+                tipo_cliente=dados.get('tipo_cliente')
             )
             db.session.add(cliente)
             db.session.flush()  # Para pegar o id do cliente
