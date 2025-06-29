@@ -11,7 +11,7 @@ import { Calendar } from '@/components/ui/calendar.jsx'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.jsx'
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx'
 import { Button } from '@/components/ui/button.jsx'
-import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload, Package, Wrench, Hammer, Truck } from 'lucide-react'
+import { Users, Calendar as CalendarIcon, Bell, BarChart3, Home, Plus, Search, Edit, Trash2, Download, Mail, Tag, CalendarDays, Clock, AlertTriangle, CheckCircle, X, Phone, MapPin, FileText, ShoppingCart, Pencil, Trash, FileSpreadsheet, DollarSign, TrendingUp, Upload, Package, Wrench, Hammer, Truck, Check, ChevronDown, Circle, Settings, Star } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Area, ComposedChart } from 'recharts'
 import './App.css'
 import logo from './assets/react.svg'
@@ -236,16 +236,16 @@ function Dashboard() {
         </div>
 
         {/* Loading apenas nos cards, mantendo header visível */}
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
-            <CardContent className="flex flex-col items-center justify-center h-full">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="flex items-center justify-center h-64 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 animate-pulse col-span-3">
+              <CardContent className="flex flex-col items-center justify-center h-full">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 flex items-center justify-center mb-4 animate-spin">
-                <Home className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-white text-lg">Carregando dashboard...</div>
-            </CardContent>
-          </Card>
-        </div>
+                  <Home className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-white text-lg">Carregando dashboard...</div>
+              </CardContent>
+            </Card>
+          </div>
       </div>
     )
   }
@@ -889,6 +889,9 @@ function ClienteForm({ cliente, onSave, onCancel }) {
             <DialogTitle>
               {cliente ? 'Editar Cliente' : 'Novo Cliente'}
             </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              {cliente ? 'Atualize as informações do cliente' : 'Preencha as informações do novo cliente'}
+            </DialogDescription>
           </DialogHeader>
     <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1064,6 +1067,9 @@ function ClienteForm({ cliente, onSave, onCancel }) {
               <DialogTitle>
                 {compraEditando ? 'Editar Compra' : 'Nova Compra'}
               </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                {compraEditando ? 'Atualize as informações da compra' : 'Adicione uma nova compra ao histórico'}
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitCompra} className="space-y-4">
               <div className="space-y-2">
@@ -1145,8 +1151,8 @@ function ClienteForm({ cliente, onSave, onCancel }) {
         </Button>
                 <Button 
                   type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white transition-all flex-1 sm:flex-none"
+                  >
                   {compraEditando ? 'Salvar' : 'Adicionar'}
         </Button>
       </DialogFooter>
@@ -1340,6 +1346,30 @@ function ClientesList() {
                 <Users className="w-6 h-6 text-white" />
               </div>
               <div className="text-white text-lg">Carregando clientes...</div>
+            </CardContent>
+          </Card>
+      ) : clientes.length === 0 ? (
+          <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 col-span-3">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Users className="w-16 h-16 text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                {busca ? 'Nenhum cliente encontrado' : 'Nenhum cliente cadastrado'}
+              </h3>
+              <p className="text-gray-400 mb-6">
+                {busca 
+                  ? `Nenhum cliente encontrado para "${busca}". Tente uma busca diferente.`
+                  : 'Comece adicionando seu primeiro cliente'
+                }
+              </p>
+              {!busca && (
+                <Button 
+                  onClick={abrirFormularioNovo}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Cliente
+                </Button>
+              )}
             </CardContent>
           </Card>
       ) : (
@@ -1657,136 +1687,172 @@ function Agendamentos() {
         </Card>
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
-          {agendamentos.map((agendamento) => (
-            <Card key={agendamento.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 hover:scale-[1.02] w-full mb-2 sm:mb-3 p-2 sm:p-4 rounded-xl">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-1">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => abrirFormularioEdicao(agendamento)}
-                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <div className="flex-1 text-center min-w-0">
-                    <CardTitle className="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors truncate">{agendamento.titulo}</CardTitle>
-                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
-                      <span className="text-indigo-400 font-medium">{agendamento.cliente_nome || 'Agendamento sem cliente'}</span>
-                    </CardDescription>
-                  </div>
-                  <div className="flex gap-1">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => deletarAgendamento(agendamento.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Badges com Melhor Design */}
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <Badge 
-                    variant="outline" 
-                    className={`font-medium shadow-lg ${
-                      agendamento.status === 'agendado' ? 'bg-blue-900/20 text-cyan-300 border-cyan-500/30 shadow-cyan-500/20' :
-                      agendamento.status === 'concluido' ? 'bg-green-900/20 text-green-300 border-green-500/30 shadow-green-500/20' :
-                      'bg-red-900/20 text-red-300 border-red-500/30 shadow-red-500/20'
-                    }`}
+          {agendamentos.length === 0 ? (
+            <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 col-span-3">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <CalendarIcon className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                  {busca ? 'Nenhum agendamento encontrado' : 'Nenhum agendamento cadastrado'}
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  {busca 
+                    ? `Nenhum agendamento encontrado para "${busca}". Tente uma busca diferente.`
+                    : 'Comece adicionando seu primeiro agendamento para organizar sua agenda.'
+                  }
+                </p>
+                {!busca && (
+                  <Button 
+                    onClick={abrirFormularioNovo}
+                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-6"
                   >
-                    {agendamento.status === 'agendado' ? '✓ Agendado' :
-                     agendamento.status === 'concluido' ? '✔ Concluído' : '✗ Cancelado'}
-                  </Badge>
-                  {agendamento.tipo && (
-                    <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30 font-medium shadow-lg shadow-orange-500/20">
-                      <Tag className="w-3 h-3 inline mr-1" />
-                      {agendamento.tipo === 'reuniao' ? 'Reunião' :
-                       agendamento.tipo === 'consulta' ? 'Consulta' :
-                       agendamento.tipo === 'evento' ? 'Evento' :
-                       agendamento.tipo === 'outro' ? 'Outro' : agendamento.tipo}
-                    </Badge>
-                  )}
-                  {agendamento.local && (
-                    <Badge className="bg-sky-500/20 text-sky-300 border-sky-500/30 font-medium shadow-lg shadow-sky-500/20">
-                      <MapPin className="w-3 h-3 inline mr-1" />
-                      {agendamento.local}
-                    </Badge>
-                  )}
+                    <Plus className="w-4 h-4 mr-2" />
+                    Adicionar Agendamento
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            agendamentos.map((agendamento) => (
+              <Card key={agendamento.id} className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-gray-600/50 transition-all duration-300 hover:shadow-lg hover:shadow-gray-900/20">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-white mb-1 line-clamp-1">{agendamento.titulo}</h3>
+                      <p className="text-sm text-gray-400 line-clamp-1">
+                        {clientes.find(c => c.id === agendamento.cliente_id)?.nome || 'Cliente não encontrado'}
+                      </p>
+                  </div>
+                    <div className="flex gap-1 ml-2">
+                    <Button 
+                      size="sm"
+                        variant="ghost"
+                      onClick={() => abrirFormularioEdicao(agendamento)}
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10"
+                    >
+                        <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      size="sm"
+                        variant="ghost"
+                      onClick={() => deletarAgendamento(agendamento.id)}
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-400 hover:bg-red-400/10"
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-                
-                {/* Informações principais em caixas */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-lg border border-cyan-500/20 text-center">
-                    <p className="text-xs text-gray-400 mb-1 font-medium">Início</p>
-                    <p className="text-lg font-bold text-cyan-400">
+
+                  <div className="space-y-2 mb-3">
+                    {/* Data e Hora */}
+                <div className="flex items-center gap-2 text-sm">
+                      <CalendarIcon className="w-4 h-4 text-gray-400" />
+                      <p className="text-gray-300">
                     {(() => {
                       try {
-                          if (!agendamento.data_agendamento) return 'Não definido'
                         const data = new Date(agendamento.data_agendamento)
                         return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
                       } catch {
                         return 'Data inválida'
                       }
                     })()}
-                    </p>
+                      </p>
                 </div>
-                  <div className="p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg border border-blue-500/20 text-center">
-                    <p className="text-xs text-gray-400 mb-1 font-medium">Fim</p>
-                    <p className="text-lg font-bold text-cyan-200">
-                      {(() => {
-                        try {
-                          if (!agendamento.data_fim) return 'Não definido'
-                          const data = new Date(agendamento.data_fim)
-                          return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
-                        } catch {
-                          return 'Data inválida'
-                        }
-                      })()}
-                    </p>
+                    
+                    {/* Tipo */}
+                  <div className="flex items-center gap-2 text-sm">
+                      <Tag className="w-4 h-4 text-gray-400" />
+                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
+                        {agendamento.tipo || 'Não especificado'}
+                      </Badge>
                   </div>
+                    
+                    {/* Status */}
+                  <div className="flex items-center gap-2 text-sm">
+                      <Circle className="w-4 h-4 text-gray-400" />
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs ${
+                          agendamento.status === 'concluido' 
+                            ? 'border-green-600 text-green-400' 
+                            : agendamento.status === 'cancelado'
+                            ? 'border-red-600 text-red-400'
+                            : 'border-yellow-600 text-yellow-400'
+                        }`}
+                      >
+                        {agendamento.status === 'concluido' ? 'Concluído' : 
+                         agendamento.status === 'cancelado' ? 'Cancelado' : 
+                         agendamento.status === 'agendado' ? 'Agendado' : 
+                         agendamento.status || 'Pendente'}
+                      </Badge>
+                  </div>
+                    
+                    {/* Local */}
+                {agendamento.local && (
+                  <div className="flex items-center gap-2 text-sm">
+                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <p className="text-gray-300 line-clamp-1">{agendamento.local}</p>
+                  </div>
+                )}
                   </div>
                 
-                {/* Descrição */}
+                  {/* Descrição */}
                 {agendamento.descricao && (
-                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
-                    <p className="text-xs text-gray-400 mb-1 font-medium">Descrição</p>
-                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{agendamento.descricao}</p>
+                    <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                      <p className="text-xs text-gray-400 mb-1 font-medium">Descrição</p>
+                      <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{agendamento.descricao}</p>
                 </div>
-                )}
+                  )}
               </CardContent>
             </Card>
-          ))}
+            ))
+          )}
         </div>
       )}
 
       {dialogAberto && (
         <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
-          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle className="text-xl text-white">
+          <DialogContent className="bg-gray-900/95 border-gray-700 text-white max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader className="border-b border-gray-700 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-cyan-600 to-cyan-700 rounded-xl flex items-center justify-center">
+                  <CalendarIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold text-white">
                 {agendamentoEditando ? 'Editar Agendamento' : 'Novo Agendamento'}
               </DialogTitle>
+                  <DialogDescription className="text-gray-400 mt-1">
+                    {agendamentoEditando ? 'Atualize as informações do agendamento' : 'Preencha as informações do novo agendamento'}
+                  </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            
+            <form onSubmit={handleSubmit} className="space-y-6 py-4">
+              {/* Seção 1: Informações Básicas */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <FileText className="w-5 h-5 text-yellow-400" />
+                  <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                <Label htmlFor="cliente_id">Cliente</Label>
+                    <Label htmlFor="cliente_id" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                      Cliente *
+                    </Label>
                 <Select
                   value={formData.cliente_id}
                   onValueChange={(value) => setFormData({ ...formData, cliente_id: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-cyan-500 focus:ring-cyan-500/20 transition-all">
                       <SelectValue placeholder="Selecione um cliente" />
                     </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectContent className="bg-gray-800 border-gray-600 max-h-60">
                       {clientes.map((cliente) => (
-                      <SelectItem key={cliente.id} value={cliente.id.toString()} className="text-white hover:bg-gray-600">
-                          {cliente.nome}
+                          <SelectItem key={cliente.id} value={cliente.id.toString()} className="text-white hover:bg-gray-700 focus:bg-gray-700">
+                            👤 {cliente.nome}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -1794,112 +1860,172 @@ function Agendamentos() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="titulo">Título</Label>
+                    <Label htmlFor="titulo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      Título *
+                    </Label>
                 <Input
                   id="titulo"
                   value={formData.titulo}
                   onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
+                      placeholder="Ex: Reunião com cliente, Consulta médica"
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                   required
                 />
+                  </div>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="descricao">Descrição</Label>
+                  <Label htmlFor="descricao" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Descrição
+                  </Label>
                 <Textarea
                   id="descricao"
                   value={formData.descricao}
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Descreva os detalhes do agendamento, objetivos, observações importantes..."
                   rows={3}
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all resize-none"
                 />
+                </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              {/* Seção 2: Data e Horário */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Clock className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-semibold text-white">Data e Horário</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="data_agendamento">Data de Início</Label>
+                    <Label htmlFor="data_agendamento" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Data de Início *
+                    </Label>
                   <Input
                     id="data_agendamento"
                     type="datetime-local"
                     value={formData.data_agendamento}
                     onChange={(e) => setFormData({ ...formData, data_agendamento: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-white"
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white focus:border-purple-500 focus:ring-purple-500/20 transition-all"
                     required
                   />
                 </div>
+                  
                 <div className="space-y-2">
-                  <Label htmlFor="data_fim">Data de Fim</Label>
+                    <Label htmlFor="data_fim" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      Data de Fim
+                    </Label>
                   <Input
                     id="data_fim"
                     type="datetime-local"
                     value={formData.data_fim}
                     onChange={(e) => setFormData({ ...formData, data_fim: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-white"
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white focus:border-indigo-500 focus:ring-indigo-500/20 transition-all"
                   />
+                  </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              {/* Seção 3: Detalhes do Evento */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <MapPin className="w-5 h-5 text-orange-400" />
+                  <h3 className="text-lg font-semibold text-white">Detalhes do Evento</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="tipo">Tipo</Label>
+                    <Label htmlFor="tipo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      Tipo de Evento
+                    </Label>
                   <Select
                     value={formData.tipo}
                     onValueChange={(value) => setFormData({ ...formData, tipo: value })}
                   >
-                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-orange-500 focus:ring-orange-500/20 transition-all">
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-700 border-gray-600">
-                      <SelectItem value="reuniao" className="text-white hover:bg-gray-600">Reunião</SelectItem>
-                      <SelectItem value="consulta" className="text-white hover:bg-gray-600">Consulta</SelectItem>
-                      <SelectItem value="evento" className="text-white hover:bg-gray-600">Evento</SelectItem>
-                      <SelectItem value="outro" className="text-white hover:bg-gray-600">Outro</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="reuniao" className="text-white hover:bg-gray-700 focus:bg-gray-700">🤝 Reunião</SelectItem>
+                        <SelectItem value="consulta" className="text-white hover:bg-gray-700 focus:bg-gray-700">👨‍⚕️ Consulta</SelectItem>
+                        <SelectItem value="evento" className="text-white hover:bg-gray-700 focus:bg-gray-700">🎉 Evento</SelectItem>
+                        <SelectItem value="apresentacao" className="text-white hover:bg-gray-700 focus:bg-gray-700">📊 Apresentação</SelectItem>
+                        <SelectItem value="treinamento" className="text-white hover:bg-gray-700 focus:bg-gray-700">📚 Treinamento</SelectItem>
+                        <SelectItem value="outro" className="text-white hover:bg-gray-700 focus:bg-gray-700">📋 Outro</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+                  
                 <div className="space-y-2">
-                  <Label htmlFor="local">Local</Label>
+                    <Label htmlFor="local" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      Local
+                    </Label>
                   <Input
                     id="local"
                     value={formData.local}
                     onChange={(e) => setFormData({ ...formData, local: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-white"
+                      placeholder="Ex: Sala de reuniões, Consultório, Online"
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-red-500 focus:ring-red-500/20 transition-all"
                   />
+                  </div>
                 </div>
+              </div>
+
+              {/* Seção 4: Status */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Circle className="w-5 h-5 text-yellow-400" />
+                  <h3 className="text-lg font-semibold text-white">Status</h3>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                    Status do Agendamento
+                  </Label>
                 <Select
                   value={formData.status}
                   onValueChange={(value) => setFormData({ ...formData, status: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-yellow-500 focus:ring-yellow-500/20 transition-all">
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="agendado" className="text-white hover:bg-gray-600">Agendado</SelectItem>
-                    <SelectItem value="concluido" className="text-white hover:bg-gray-600">Concluído</SelectItem>
-                    <SelectItem value="cancelado" className="text-white hover:bg-gray-600">Cancelado</SelectItem>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      <SelectItem value="agendado" className="text-white hover:bg-gray-700 focus:bg-gray-700">📅 Agendado</SelectItem>
+                      <SelectItem value="concluido" className="text-white hover:bg-gray-700 focus:bg-gray-700">✅ Concluído</SelectItem>
+                      <SelectItem value="cancelado" className="text-white hover:bg-gray-700 focus:bg-gray-700">❌ Cancelado</SelectItem>
+                      <SelectItem value="adiado" className="text-white hover:bg-gray-700 focus:bg-gray-700">⏰ Adiado</SelectItem>
                   </SelectContent>
                 </Select>
+                </div>
               </div>
               
-              <DialogFooter>
+              {/* Footer com Botões */}
+              <DialogFooter className="border-t border-gray-700 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleCancel}
-                  className="bg-gray-700 text-white hover:bg-gray-600"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-all flex-1 sm:flex-none"
                 >
+                    <X className="w-4 h-4 mr-2" />
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white transition-all flex-1 sm:flex-none"
                 >
-                  Salvar
+                    <Check className="w-4 h-4 mr-2" />
+                    {agendamentoEditando ? 'Atualizar Agendamento' : 'Criar Agendamento'}
                 </Button>
+                </div>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -2116,237 +2242,341 @@ function Lembretes() {
         </Card>
       ) : (
         <div className="grid gap-2 gap-x-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
-          {lembretes.map((lembrete) => (
-            <Card key={lembrete.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-yellow-500/50 hover:shadow-xl hover:shadow-yellow-500/10 transition-all duration-300 hover:scale-[1.02]">
+          {lembretes.length === 0 ? (
+            <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 col-span-3">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Bell className="w-16 h-16 text-gray-400 mb-4" />
+                <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                  {busca ? 'Nenhum lembrete encontrado' : 'Nenhum lembrete cadastrado'}
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  {busca 
+                    ? `Nenhum lembrete encontrado para "${busca}". Tente uma busca diferente.`
+                    : 'Comece adicionando seu primeiro lembrete'
+                  }
+                </p>
+                {!busca && (
+                  <Button 
+                    onClick={abrirFormularioNovo}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-6"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Adicionar Lembrete
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            lembretes.map((lembrete) => (
+              <Card key={lembrete.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-yellow-500/50 hover:shadow-xl hover:shadow-yellow-500/10 transition-all duration-300 hover:scale-[1.02]">
               <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex gap-1">
+                  <div className="flex items-start justify-between">
+                    <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => abrirFormularioEdicao(lembrete)}
-                      className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
+                        className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
-                  </div>
-                  <div className="flex-1 text-center min-w-0">
-                    <CardTitle className="text-lg font-bold text-white group-hover:text-yellow-300 transition-colors truncate">{lembrete.titulo}</CardTitle>
-                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
-                      {lembrete.cliente_nome || 'Lembrete geral'}
-                    </CardDescription>
-                  </div>
-                  <div className="flex gap-1">
+                    </div>
+                    <div className="flex-1 text-center min-w-0">
+                      <CardTitle className="text-lg font-bold text-white group-hover:text-yellow-300 transition-colors truncate">{lembrete.titulo}</CardTitle>
+                      <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">
+                        {lembrete.cliente_nome || 'Lembrete geral'}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-1">
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => deletarLembrete(lembrete.id)}
-                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                        className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Badges com Melhor Design */}
-                <div className="flex flex-wrap gap-2 justify-center">
+                <CardContent className="space-y-4">
+                  {/* Badges com Melhor Design */}
+                  <div className="flex flex-wrap gap-2 justify-center">
                     <Badge 
                       variant="outline" 
-                    className={`font-medium shadow-lg ${
-                      lembrete.prioridade === 'baixa' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
-                      lembrete.prioridade === 'media' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
-                      lembrete.prioridade === 'alta' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30 shadow-orange-500/20' :
-                      lembrete.prioridade === 'urgente' ? 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/20' :
-                      'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                      className={`font-medium shadow-lg ${
+                        lembrete.prioridade === 'baixa' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                        lembrete.prioridade === 'media' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
+                        lembrete.prioridade === 'alta' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30 shadow-orange-500/20' :
+                        lembrete.prioridade === 'urgente' ? 'bg-red-500/20 text-red-300 border-red-500/30 shadow-red-500/20' :
+                        'bg-gray-500/20 text-gray-300 border-gray-500/30'
                       }`}
                     >
-                    {lembrete.prioridade === 'baixa' ? '🟢 Baixa' :
-                     lembrete.prioridade === 'media' ? '🟡 Média' :
-                     lembrete.prioridade === 'alta' ? '🟠 Alta' :
-                     lembrete.prioridade === 'urgente' ? '🔴 Urgente' : 'Média'}
+                      {lembrete.prioridade === 'baixa' ? '🟢 Baixa' :
+                       lembrete.prioridade === 'media' ? '🟡 Média' :
+                       lembrete.prioridade === 'alta' ? '🟠 Alta' :
+                       lembrete.prioridade === 'urgente' ? '🔴 Urgente' : 'Média'}
                     </Badge>
                     <Badge 
                       variant="outline" 
-                    className={`font-medium shadow-lg ${
-                      lembrete.status === 'pendente' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
-                      lembrete.status === 'concluido' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
-                      lembrete.concluido ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
-                      'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20'
+                      className={`font-medium shadow-lg ${
+                        lembrete.status === 'pendente' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20' :
+                        lembrete.status === 'concluido' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                        lembrete.concluido ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-green-500/20' :
+                        'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 shadow-yellow-500/20'
                       }`}
                     >
-                    {lembrete.status === 'pendente' ? '⏳ Pendente' :
-                     lembrete.status === 'concluido' ? '✅ Concluído' :
-                     lembrete.concluido ? '✅ Concluído' : '⏳ Pendente'}
+                      {lembrete.status === 'pendente' ? '⏳ Pendente' :
+                       lembrete.status === 'concluido' ? '✅ Concluído' :
+                       lembrete.concluido ? '✅ Concluído' : '⏳ Pendente'}
                     </Badge>
-                  {lembrete.recorrente && (
-                    <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 font-medium shadow-lg shadow-purple-500/20">
-                      <Clock className="w-3 h-3 inline mr-1" />
-                      Recorrente
-                    </Badge>
-                  )}
-                </div>
-                
-                {/* Data do Lembrete - Destaque */}
-                <div className="text-center p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg border border-yellow-500/20">
-                  <p className="text-xs text-gray-400 mb-1 font-medium">Data do Lembrete</p>
-                  <p className="text-lg font-bold text-yellow-400">
-                    {(() => {
-                      try {
-                        if (!lembrete.data_lembrete) return 'Não definida'
-                        const data = new Date(lembrete.data_lembrete)
-                        return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
-                      } catch {
-                        return 'Data inválida'
-                      }
-                    })()}
-                  </p>
-                </div>
-                
-                {/* Informações Adicionais */}
-                {lembrete.recorrente && (
-                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
-                    <p className="text-xs text-gray-400 mb-1">Intervalo</p>
-                    <p className="text-sm font-medium text-purple-400">
-                      {lembrete.intervalo_recorrencia}
+                    {lembrete.recorrente && (
+                      <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 font-medium shadow-lg shadow-purple-500/20">
+                        <Clock className="w-3 h-3 inline mr-1" />
+                        Recorrente
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  {/* Data do Lembrete - Destaque */}
+                  <div className="text-center p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg border border-yellow-500/20">
+                    <p className="text-xs text-gray-400 mb-1 font-medium">Data do Lembrete</p>
+                    <p className="text-lg font-bold text-yellow-400">
+                      {(() => {
+                        try {
+                          if (!lembrete.data_lembrete) return 'Não definida'
+                          const data = new Date(lembrete.data_lembrete)
+                          return isNaN(data.getTime()) ? 'Data inválida' : data.toLocaleString('pt-BR')
+                        } catch {
+                          return 'Data inválida'
+                        }
+                      })()}
                     </p>
                   </div>
-                )}
-                
-                {/* Descrição */}
-                {lembrete.descricao && (
-                  <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
-                    <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{lembrete.descricao}</p>
-                  </div>
-                )}
-                
-                {/* Botão de Concluir */}
+                  
+                  {/* Informações Adicionais */}
+                  {lembrete.recorrente && (
+                    <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30 text-center">
+                      <p className="text-xs text-gray-400 mb-1">Intervalo</p>
+                      <p className="text-sm font-medium text-purple-400">
+                        {lembrete.intervalo_recorrencia}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* Descrição */}
+                  {lembrete.descricao && (
+                    <div className="p-3 bg-gray-700/20 rounded-lg border border-gray-700/30">
+                      <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">{lembrete.descricao}</p>
+                    </div>
+                  )}
+                  
+                  {/* Botão de Concluir */}
                     {(lembrete.status === 'pendente' || !lembrete.concluido) && (
-                  <div className="flex justify-center">
+                    <div className="flex justify-center">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => marcarComoConcluido(lembrete.id)}
-                      className="text-green-400 hover:text-green-300 hover:bg-green-500/10 transition-all"
+                        className="text-green-400 hover:text-green-300 hover:bg-green-500/10 transition-all"
                       >
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Marcar como Concluído
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Marcar como Concluído
                       </Button>
                     </div>
                   )}
               </CardContent>
             </Card>
-          ))}
+            ))
+          )}
         </div>
       )}
 
       {dialogAberto && (
         <Dialog open={dialogAberto} onOpenChange={setDialogAberto}>
-          <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto" onInteractOutside={e => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle className="text-xl text-white">
+          <DialogContent className="bg-gray-900/95 border-gray-700 text-white max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader className="border-b border-gray-700 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
+                  <Bell className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold text-white">
                 {lembreteEditando ? 'Editar Lembrete' : 'Novo Lembrete'}
               </DialogTitle>
+                  <DialogDescription className="text-gray-400 mt-1">
+                    {lembreteEditando ? 'Atualize as informações do lembrete' : 'Preencha as informações do novo lembrete'}
+                  </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            
+            <form onSubmit={handleSubmit} className="space-y-6 py-4">
+              {/* Seção 1: Informações Básicas */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <FileText className="w-5 h-5 text-yellow-400" />
+                  <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                <Label htmlFor="titulo">Título</Label>
+                    <Label htmlFor="titulo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                      Título *
+                    </Label>
                 <Input
                   id="titulo"
+                      name="titulo"
                   value={formData.titulo}
                   onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
+                      required
+                      placeholder="Ex: Lembrete de Reunião, Pagamento de Conta"
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-500 focus:ring-yellow-500/20 transition-all"
                 />
         </div>
               
               <div className="space-y-2">
-                <Label htmlFor="descricao">Descrição</Label>
+                    <Label htmlFor="data_lembrete" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      Data do Lembrete *
+                    </Label>
+                    <Input
+                      id="data_lembrete"
+                      name="data_lembrete"
+                      type="datetime-local"
+                      value={formData.data_lembrete}
+                      onChange={(e) => setFormData({ ...formData, data_lembrete: e.target.value })}
+                      required
+                      className="h-9 bg-gray-800/50 border-gray-600 text-white focus:border-orange-500 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="descricao" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Descrição
+                  </Label>
                 <Textarea
                   id="descricao"
+                    name="descricao"
                   value={formData.descricao}
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
+                    placeholder="Descreva os detalhes do lembrete, observações importantes, contexto..."
+                    rows={3}
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all resize-none"
                 />
+                </div>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="data_lembrete">Data do Lembrete</Label>
-                <Input
-                  id="data_lembrete"
-                  type="datetime-local"
-                  value={formData.data_lembrete}
-                  onChange={(e) => setFormData({ ...formData, data_lembrete: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-white"
-                />
+              {/* Seção 2: Prioridade e Status */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Circle className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-semibold text-white">Prioridade e Status</h3>
               </div>
               
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                <Label htmlFor="prioridade">Prioridade</Label>
+                    <Label htmlFor="prioridade" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Prioridade
+                    </Label>
                 <Select
                   value={formData.prioridade}
                   onValueChange={(value) => setFormData({ ...formData, prioridade: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-purple-500 focus:ring-purple-500/20 transition-all">
                     <SelectValue placeholder="Selecione a prioridade" />
                     </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="alta" className="text-white hover:bg-gray-600">Alta</SelectItem>
-                    <SelectItem value="media" className="text-white hover:bg-gray-600">Média</SelectItem>
-                    <SelectItem value="baixa" className="text-white hover:bg-gray-600">Baixa</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="baixa" className="text-white hover:bg-gray-700 focus:bg-gray-700">🟢 Baixa</SelectItem>
+                        <SelectItem value="media" className="text-white hover:bg-gray-700 focus:bg-gray-700">🟡 Média</SelectItem>
+                        <SelectItem value="alta" className="text-white hover:bg-gray-700 focus:bg-gray-700">🟠 Alta</SelectItem>
+                        <SelectItem value="urgente" className="text-white hover:bg-gray-700 focus:bg-gray-700">🔴 Urgente</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
               <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="status" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                      Status
+                    </Label>
                 <Select
                   value={formData.status}
                   onValueChange={(value) => setFormData({ ...formData, status: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-cyan-500 focus:ring-cyan-500/20 transition-all">
                     <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="pendente" className="text-white hover:bg-gray-600">Pendente</SelectItem>
-                    <SelectItem value="concluido" className="text-white hover:bg-gray-600">Concluído</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="pendente" className="text-white hover:bg-gray-700 focus:bg-gray-700">⏳ Pendente</SelectItem>
+                        <SelectItem value="concluido" className="text-white hover:bg-gray-700 focus:bg-gray-700">✅ Concluído</SelectItem>
                   </SelectContent>
                 </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Seção 3: Recorrência */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Clock className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-lg font-semibold text-white">Recorrência</h3>
       </div>
 
               <div className="space-y-2">
-                <Label htmlFor="recorrencia">Recorrência</Label>
+                  <Label htmlFor="recorrencia" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                    Tipo de Recorrência
+                  </Label>
                 <Select
                   value={formData.recorrencia}
                   onValueChange={(value) => setFormData({ ...formData, recorrencia: value })}
                 >
-                  <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-indigo-500 focus:ring-indigo-500/20 transition-all">
                     <SelectValue placeholder="Selecione a recorrência" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-700 border-gray-600">
-                    <SelectItem value="nenhuma" className="text-white hover:bg-gray-600">Nenhuma</SelectItem>
-                    <SelectItem value="diaria" className="text-white hover:bg-gray-600">Diária</SelectItem>
-                    <SelectItem value="semanal" className="text-white hover:bg-gray-600">Semanal</SelectItem>
-                    <SelectItem value="mensal" className="text-white hover:bg-gray-600">Mensal</SelectItem>
-                    <SelectItem value="anual" className="text-white hover:bg-gray-600">Anual</SelectItem>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      <SelectItem value="nenhuma" className="text-white hover:bg-gray-700 focus:bg-gray-700">❌ Nenhuma</SelectItem>
+                      <SelectItem value="diaria" className="text-white hover:bg-gray-700 focus:bg-gray-700">📅 Diária</SelectItem>
+                      <SelectItem value="semanal" className="text-white hover:bg-gray-700 focus:bg-gray-700">📅 Semanal</SelectItem>
+                      <SelectItem value="mensal" className="text-white hover:bg-gray-700 focus:bg-gray-700">📅 Mensal</SelectItem>
+                      <SelectItem value="anual" className="text-white hover:bg-gray-700 focus:bg-gray-700">📅 Anual</SelectItem>
                   </SelectContent>
                 </Select>
+                  
+                  <div className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700/50">
+                    <Clock className="w-4 h-4 text-indigo-400" />
+                    <span className="text-sm text-gray-300">
+                      Lembretes recorrentes serão criados automaticamente após a data definida
+                    </span>
+                  </div>
+                </div>
       </div>
 
-              <DialogFooter>
+              {/* Footer com Botões */}
+              <DialogFooter className="border-t border-gray-700 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 w-full">
                       <Button 
                   type="button"
                   variant="outline"
                   onClick={() => setDialogAberto(false)}
-                  className="bg-gray-700 text-white hover:bg-gray-600"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-all flex-1 sm:flex-none"
                 >
+                    <X className="w-4 h-4 mr-2" />
                   Cancelar
                       </Button>
                     <Button 
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white transition-all flex-1 sm:flex-none"
                     >
-                  Salvar
+                    <Check className="w-4 h-4 mr-2" />
+                    {lembreteEditando ? 'Atualizar Lembrete' : 'Criar Lembrete'}
                     </Button>
+                </div>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -2845,7 +3075,7 @@ function Produtos() {
         </div>
         <Button onClick={abrirFormularioNovo} className="bg-orange-600 hover:bg-orange-700 text-white px-6">
           <Plus className="w-4 h-4 mr-2" />
-          Adicionar Produto
+          Novo Produto
           </Button>
       </div>
 
@@ -2911,8 +3141,24 @@ function Produtos() {
         <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Package className="w-16 h-16 text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-300 mb-2">Nenhum produto encontrado</h3>
-            <p className="text-gray-400">Comece adicionando seu primeiro produto</p>
+            <h3 className="text-xl font-semibold text-gray-300 mb-2">
+              {busca ? 'Nenhum produto encontrado' : 'Nenhum produto cadastrado'}
+            </h3>
+            <p className="text-gray-400 mb-6">
+              {busca 
+                ? `Nenhum produto encontrado para "${busca}". Tente uma busca diferente.`
+                : 'Comece adicionando seu primeiro produto'
+              }
+            </p>
+            {!busca && (
+              <Button 
+                onClick={abrirFormularioNovo}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Adicionar Produto
+              </Button>
+            )}
             </CardContent>
           </Card>
         ) : (
@@ -3083,190 +3329,323 @@ function Produtos() {
       {/* Modal de formulário */}
       {showForm && (
         <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md" onInteractOutside={e => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-white">
+          <DialogContent className="bg-gray-900/95 border-gray-700 text-white max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader className="border-b border-gray-700 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+                  <Package className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold text-white">
                 {editingProduto ? 'Editar Produto' : 'Novo Produto'}
               </DialogTitle>
-              <DialogDescription className="text-gray-400">
+                  <DialogDescription className="text-gray-400 mt-1">
                 {editingProduto ? 'Atualize as informações do produto' : 'Preencha as informações do novo produto'}
               </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                <Label htmlFor="nome" className="text-gray-300">Nome</Label>
+            
+            <form onSubmit={handleSubmit} className="space-y-6 py-4">
+              {/* Seção 1: Informações Básicas */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <FileText className="w-5 h-5 text-orange-400" />
+                  <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nome" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      Nome do Produto *
+                    </Label>
                 <Input
                   id="nome"
                   name="nome"
                   defaultValue={editingProduto?.nome}
                   required
-                  className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Ex: Smartphone Galaxy S23"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-orange-500/20 transition-all"
                 />
                   </div>
-                  <div>
-                <Label htmlFor="codigo" className="text-gray-300">Código</Label>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="codigo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      Código do Produto *
+                    </Label>
                 <Input
                   id="codigo"
                   name="codigo"
                   defaultValue={editingProduto?.codigo}
                   required
-                  className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Ex: PROD-001"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                 />
                   </div>
-                  <div>
-                <Label htmlFor="descricao" className="text-gray-300">Descrição</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="descricao" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Descrição
+                  </Label>
                 <Textarea
                   id="descricao"
                   name="descricao"
                   defaultValue={editingProduto?.descricao}
-                  className="bg-gray-800 border-gray-700 text-white"
+                    placeholder="Descreva as características, benefícios e especificações do produto..."
+                    rows={3}
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all resize-none"
                 />
                   </div>
-              <div className="grid grid-cols-2 gap-4">
-                  <div>
-                  <Label htmlFor="preco" className="text-gray-300">Preço de Venda</Label>
+              </div>
+
+              {/* Seção 2: Preços e Custos */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <DollarSign className="w-5 h-5 text-green-400" />
+                  <h3 className="text-lg font-semibold text-white">Preços e Custos</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="preco" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      Preço de Venda *
+                    </Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">R$</span>
                   <Input
                     id="preco"
                     name="preco"
                     type="number"
                     step="0.01"
+                        min="0"
                     defaultValue={editingProduto?.valor_venda}
                     required
-                    className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="0,00"
+                        className="pl-10 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all"
                   />
                   </div>
-                  <div>
-                  <Label htmlFor="custo" className="text-gray-300">Custo</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="custo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      Custo de Aquisição
+                    </Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">R$</span>
                   <Input
                     id="custo"
                     name="custo"
                     type="number"
                     step="0.01"
+                        min="0"
                     defaultValue={editingProduto?.custo}
-                    required
-                    className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="0,00"
+                        className="pl-10 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-red-500 focus:ring-red-500/20 transition-all"
                   />
                   </div>
                   </div>
-              <div className="grid grid-cols-2 gap-4">
-                  <div>
-                  <Label htmlFor="estoque" className="text-gray-300">Estoque</Label>
+                </div>
+              </div>
+
+              {/* Seção 3: Estoque e Medidas */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Package className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-semibold text-white">Estoque e Medidas</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="estoque" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      Estoque Atual *
+                    </Label>
                   <Input
                     id="estoque"
                     name="estoque"
                     type="number"
+                      min="0"
                     defaultValue={editingProduto?.estoque_atual}
                     required
-                    className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="0"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
                   />
                   </div>
-                  <div>
-                  <Label htmlFor="unidade_medida" className="text-gray-300">Unidade de Medida</Label>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="estoque_minimo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                      Estoque Mínimo
+                    </Label>
+                    <Input
+                      id="estoque_minimo"
+                      name="estoque_minimo"
+                      type="number"
+                      min="0"
+                      defaultValue={editingProduto?.estoque_minimo}
+                      placeholder="0"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="unidade_medida" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Unidade de Medida
+                    </Label>
                   <Select name="unidade_medida" defaultValue={editingProduto?.unidade_medida || 'Unidade'}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-purple-500 focus:ring-purple-500/20 transition-all">
                       <SelectValue placeholder="Selecione a unidade" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="Unidade" className="text-white hover:bg-gray-700">Unidade</SelectItem>
-                      <SelectItem value="Kg" className="text-white hover:bg-gray-700">Quilograma (Kg)</SelectItem>
-                      <SelectItem value="g" className="text-white hover:bg-gray-700">Grama (g)</SelectItem>
-                      <SelectItem value="Litro" className="text-white hover:bg-gray-700">Litro (L)</SelectItem>
-                      <SelectItem value="ml" className="text-white hover:bg-gray-700">Mililitro (ml)</SelectItem>
-                      <SelectItem value="Metro" className="text-white hover:bg-gray-700">Metro (m)</SelectItem>
-                      <SelectItem value="cm" className="text-white hover:bg-gray-700">Centímetro (cm)</SelectItem>
-                      <SelectItem value="Caixa" className="text-white hover:bg-gray-700">Caixa</SelectItem>
-                      <SelectItem value="Pacote" className="text-white hover:bg-gray-700">Pacote</SelectItem>
-                      <SelectItem value="Par" className="text-white hover:bg-gray-700">Par</SelectItem>
-                      <SelectItem value="Conjunto" className="text-white hover:bg-gray-700">Conjunto</SelectItem>
-                      <SelectItem value="Rolo" className="text-white hover:bg-gray-700">Rolo</SelectItem>
-                      <SelectItem value="Fardo" className="text-white hover:bg-gray-700">Fardo</SelectItem>
-                      <SelectItem value="Dúzia" className="text-white hover:bg-gray-700">Dúzia</SelectItem>
-                      <SelectItem value="Quilate" className="text-white hover:bg-gray-700">Quilate</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600 max-h-60">
+                        <SelectItem value="Unidade" className="text-white hover:bg-gray-700 focus:bg-gray-700">📦 Unidade</SelectItem>
+                        <SelectItem value="Kg" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚖️ Quilograma (Kg)</SelectItem>
+                        <SelectItem value="g" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚖️ Grama (g)</SelectItem>
+                        <SelectItem value="Litro" className="text-white hover:bg-gray-700 focus:bg-gray-700">💧 Litro (L)</SelectItem>
+                        <SelectItem value="ml" className="text-white hover:bg-gray-700 focus:bg-gray-700">💧 Mililitro (ml)</SelectItem>
+                        <SelectItem value="Metro" className="text-white hover:bg-gray-700 focus:bg-gray-700">📏 Metro (m)</SelectItem>
+                        <SelectItem value="cm" className="text-white hover:bg-gray-700 focus:bg-gray-700">📏 Centímetro (cm)</SelectItem>
+                        <SelectItem value="Caixa" className="text-white hover:bg-gray-700 focus:bg-gray-700">📦 Caixa</SelectItem>
+                        <SelectItem value="Pacote" className="text-white hover:bg-gray-700 focus:bg-gray-700">📦 Pacote</SelectItem>
+                        <SelectItem value="Par" className="text-white hover:bg-gray-700 focus:bg-gray-700">👥 Par</SelectItem>
+                        <SelectItem value="Conjunto" className="text-white hover:bg-gray-700 focus:bg-gray-700">🎁 Conjunto</SelectItem>
+                        <SelectItem value="Rolo" className="text-white hover:bg-gray-700 focus:bg-gray-700">🔄 Rolo</SelectItem>
+                        <SelectItem value="Fardo" className="text-white hover:bg-gray-700 focus:bg-gray-700">📦 Fardo</SelectItem>
+                        <SelectItem value="Dúzia" className="text-white hover:bg-gray-700 focus:bg-gray-700">12️⃣ Dúzia</SelectItem>
+                        <SelectItem value="Quilate" className="text-white hover:bg-gray-700 focus:bg-gray-700">💎 Quilate</SelectItem>
                     </SelectContent>
                   </Select>
                   </div>
                 </div>
-                    <div>
-                <Label htmlFor="tempo_entrega" className="text-gray-300">Tempo de Entrega</Label>
+              </div>
+
+              {/* Seção 4: Categoria e Fornecedor */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Tag className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-semibold text-white">Categoria e Fornecedor</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="categoria" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Categoria
+                    </Label>
+                    <CategoriaSelect
+                      value={editingProduto?.categoria?.id?.toString() || ''}
+                      onValueChange={() => {}} // Função vazia pois o componente atualiza automaticamente
+                      placeholder="Selecione a categoria"
+                      categorias={categoriasProduto}
+                      tipo="produto"
+                    />
+                    {/* Campo hidden para manter compatibilidade com FormData */}
+                    <input 
+                      type="hidden" 
+                      name="categoria"
+                      defaultValue={editingProduto?.categoria?.id?.toString() || ''}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fornecedor" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      Fornecedor
+                    </Label>
+                    <Input
+                      id="fornecedor"
+                      name="fornecedor"
+                      defaultValue={editingProduto?.fornecedor || ''}
+                      placeholder="Nome do fornecedor"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Seção 5: Configurações */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Settings className="w-5 h-5 text-yellow-400" />
+                  <h3 className="text-lg font-semibold text-white">Configurações</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="status" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                      Status do Produto
+                    </Label>
+                    <Select name="status" defaultValue={editingProduto?.status || 'ativo'}>
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-yellow-500 focus:ring-yellow-500/20 transition-all">
+                        <SelectValue placeholder="Selecione o status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="ativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">✅ Ativo</SelectItem>
+                        <SelectItem value="inativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">⏸️ Inativo</SelectItem>
+                        <SelectItem value="esgotado" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚠️ Esgotado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="tempo_entrega" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                      Tempo de Entrega
+                    </Label>
                 <Input
                   id="tempo_entrega"
                   name="tempo_entrega"
                   type="text"
                   defaultValue={editingProduto?.tempo_entrega || ''}
                   placeholder="Ex: 2 dias, 5 dias úteis, imediato"
-                  className="bg-gray-800 border-gray-700 text-white"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500/20 transition-all"
                 />
                     </div>
-              <div className="grid grid-cols-2 gap-4">
-                    <div>
-                  <Label htmlFor="status" className="text-gray-300">Status</Label>
-                  <Select
-                    name="status"
-                    defaultValue={editingProduto?.status || 'ativo'}
-                  >
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                      <SelectValue placeholder="Selecione o status" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="ativo" className="text-white hover:bg-gray-700">Ativo</SelectItem>
-                      <SelectItem value="inativo" className="text-white hover:bg-gray-700">Inativo</SelectItem>
-                      <SelectItem value="esgotado" className="text-white hover:bg-gray-700">Esgotado</SelectItem>
-                    </SelectContent>
-                  </Select>
                     </div>
-                <div className="flex items-center space-x-2">
+                
+                <div className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700/50">
                   <input 
                     type="checkbox"
                     id="destaque" 
                     name="destaque"
                     defaultChecked={editingProduto?.destaque}
-                    className="w-4 h-4 text-green-600 bg-gray-800 border-gray-600 rounded focus:ring-green-500 focus:ring-2"
+                    className="w-5 h-5 text-orange-600 bg-gray-800 border-gray-600 rounded focus:ring-orange-500 focus:ring-2 transition-all"
                   />
-                  <Label htmlFor="destaque" className="text-gray-300">Produto em Destaque</Label>
+                  <Label htmlFor="destaque" className="text-gray-300 font-medium flex items-center gap-2 cursor-pointer">
+                    <Star className="w-4 h-4 text-orange-400" />
+                    Produto em Destaque
+                  </Label>
+                  <span className="text-xs text-gray-500 ml-auto">Produtos em destaque aparecem com prioridade</span>
                     </div>
                   </div>
-              <div className="space-y-2">
-                <Label htmlFor="categoria" className="text-gray-300">Categoria</Label>
-                <Select
-                  name="categoria"
-                  defaultValue={editingProduto?.categoria?.id?.toString() || ''}
-                >
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                    <SelectValue placeholder="Selecione a categoria" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
-                    {categoriasProduto.length === 0 ? (
-                      <SelectItem value="" disabled>Nenhuma categoria disponível</SelectItem>
-                    ) : (
-                      categoriasProduto.map(cat => (
-                        <SelectItem key={cat.id} value={cat.id.toString()} className="text-white hover:bg-gray-700">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.cor }}></div>
-                            {cat.nome}
-                          </div>
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="fornecedor" className="text-gray-300">Fornecedor</Label>
-                <Input
-                  id="fornecedor"
-                  name="fornecedor"
-                  defaultValue={editingProduto?.fornecedor || ''}
-                  placeholder="Nome do fornecedor"
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
-              </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={handleCancel} className="border-gray-600 text-gray-300">
+
+              {/* Footer com Botões */}
+              <DialogFooter className="border-t border-gray-700 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 w-full">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={handleCancel} 
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-all flex-1 sm:flex-none"
+                  >
+                    <X className="w-4 h-4 mr-2" />
                   Cancelar
           </Button>
-                <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
-                  {editingProduto ? 'Atualizar' : 'Cadastrar'}
+                  <Button 
+                    type="submit" 
+                    className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white transition-all flex-1 sm:flex-none"
+                  >
+                    <Check className="w-4 h-4 mr-2" />
+                    {editingProduto ? 'Atualizar Produto' : 'Cadastrar Produto'}
               </Button>
+                </div>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -3530,7 +3909,7 @@ function Servicos() {
           </div>
         <Button onClick={abrirFormularioNovo} className="bg-purple-600 hover:bg-purple-700 text-white px-6">
           <Plus className="w-4 h-4 mr-2" />
-          Adicionar Serviço
+          Novo Serviço
         </Button>
           </div>
           
@@ -3593,46 +3972,70 @@ function Servicos() {
             
       {/* Lista de serviços */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {servicosFiltrados.map((servico) => (
-          <Card key={servico.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:scale-[1.02]">
+        {servicosFiltrados.length === 0 ? (
+          <Card className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 col-span-3">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Wrench className="w-16 h-16 text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">
+                {busca ? 'Nenhum serviço encontrado' : 'Nenhum serviço cadastrado'}
+              </h3>
+              <p className="text-gray-400 mb-6">
+                {busca
+                  ? `Nenhum serviço encontrado para "${busca}". Tente uma busca diferente.`
+                  : 'Comece adicionando seu primeiro serviço'}
+              </p>
+              {!busca && (
+                <Button
+                  onClick={abrirFormularioNovo}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Serviço
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          servicosFiltrados.map((servico) => (
+            <Card key={servico.id} className="group bg-gradient-to-br from-gray-800/50 to-gray-900/50 border-gray-700/50 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 hover:scale-[1.02]">
             <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex gap-1">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-1">
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => abrirFormularioEdicao(servico)}
-                    className="text-gray-400 hover:text-white hover:bg-gray-700/50"
+                      className="text-gray-400 hover:text-white hover:bg-gray-700/50"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>
-                <div className="flex-1 text-center min-w-0">
-                  <CardTitle className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors truncate">{servico.nome}</CardTitle>
-                  <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">{servico.codigo}</CardDescription>
+                  <div className="flex-1 text-center min-w-0">
+                    <CardTitle className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors truncate">{servico.nome}</CardTitle>
+                    <CardDescription className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm font-mono">{servico.codigo}</CardDescription>
                 </div>
-                <div className="flex gap-1">
+                  <div className="flex gap-1">
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => deletarServico(servico.id)}
-                    className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                      className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Badges com Melhor Design */}
+              <CardContent className="space-y-4">
+                {/* Badges com Melhor Design */}
               <div className="flex flex-wrap gap-2 justify-center">
-                {/* Status */}
+                  {/* Status */}
                 {servico.status && (
                   <Badge className={`${
-                    servico.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-lg shadow-green-500/20' :
+                      servico.status === 'ativo' ? 'bg-green-500/20 text-green-300 border-green-500/30 shadow-lg shadow-green-500/20' :
                     servico.status === 'inativo' ? 'bg-gray-500/20 text-gray-300 border-gray-500/30' :
                     'bg-gray-500/20 text-gray-300 border-gray-500/30'
-                  } font-medium`}>
+                    } font-medium`}>
                     {servico.status === 'ativo' ? '✓ Ativo' : 
                      servico.status === 'inativo' ? '○ Inativo' : servico.status}
                   </Badge>
@@ -3736,160 +4139,437 @@ function Servicos() {
               )}
             </CardContent>
           </Card>
-        ))}
+        ))
+        )}
           </div>
           
       {/* Modal de formulário */}
       {showForm && (
         <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md" onInteractOutside={e => e.preventDefault()}>
-            <DialogHeader>
-              <DialogTitle className="text-xl font-semibold text-white">
+          <DialogContent className="bg-gray-900/95 border-gray-700 text-white max-w-4xl max-h-[90vh] overflow-y-auto backdrop-blur-md" onInteractOutside={e => e.preventDefault()}>
+            <DialogHeader className="border-b border-gray-700 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                  <Wrench className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <DialogTitle className="text-2xl font-bold text-white">
                 {editingServico ? 'Editar Serviço' : 'Novo Serviço'}
               </DialogTitle>
-              <DialogDescription className="text-gray-400">
+                  <DialogDescription className="text-gray-400 mt-1">
                 {editingServico ? 'Atualize as informações do serviço' : 'Preencha as informações do novo serviço'}
               </DialogDescription>
+                </div>
+              </div>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <Label htmlFor="nome" className="text-gray-300">Nome</Label>
+            
+            <form onSubmit={handleSubmit} className="space-y-6 py-4">
+              {/* Seção 1: Informações Básicas */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <FileText className="w-5 h-5 text-orange-400" />
+                  <h3 className="text-lg font-semibold text-white">Informações Básicas</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="nome" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Nome do Serviço *
+                    </Label>
               <Input
                   id="nome"
                   name="nome"
                   defaultValue={editingServico?.nome}
                   required
-                  className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Ex: Manutenção de Computadores"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500/20 transition-all"
               />
             </div>
-            <div>
-                <Label htmlFor="codigo" className="text-gray-300">Código</Label>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="codigo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                      Código do Serviço *
+                    </Label>
               <Input
                   id="codigo"
                   name="codigo"
                   defaultValue={editingServico?.codigo}
                   required
-                  className="bg-gray-800 border-gray-700 text-white"
+                      placeholder="Ex: SER-001"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500/20 transition-all"
               />
             </div>
-          <div>
-                <Label htmlFor="descricao" className="text-gray-300">Descrição</Label>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="descricao" className="text-gray-300 font-medium flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    Descrição
+                  </Label>
             <Textarea
                   id="descricao"
                   name="descricao"
                   defaultValue={editingServico?.descricao}
-                  className="bg-gray-800 border-gray-700 text-white"
+                    placeholder="Descreva as características, benefícios e especificações do serviço..."
+                    rows={3}
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all resize-none"
             />
           </div>
-              <div className="grid grid-cols-2 gap-4">
-            <div>
-                  <Label htmlFor="preco" className="text-gray-300">Preço</Label>
+              </div>
+
+              {/* Seção 2: Preços e Custos */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <DollarSign className="w-5 h-5 text-green-400" />
+                  <h3 className="text-lg font-semibold text-white">Preços e Custos</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="preco" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      Preço do Serviço *
+                    </Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">R$</span>
                   <Input
                     id="preco"
                     name="preco"
                     type="number"
                     step="0.01"
+                        min="0"
                     defaultValue={editingServico?.valor_venda}
                     required
-                    className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="0,00"
+                        className="pl-10 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500/20 transition-all"
                   />
             </div>
-                <div>
-                  <Label htmlFor="custo" className="text-gray-300">Custo</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="custo" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      Custo de Execução
+                    </Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">R$</span>
                   <Input
                     id="custo"
                     name="custo"
                     type="number"
                     step="0.01"
+                        min="0"
                     defaultValue={editingServico?.custo}
-                    className="bg-gray-800 border-gray-700 text-white"
+                        placeholder="0,00"
+                        className="pl-10 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-red-500 focus:ring-red-500/20 transition-all"
                   />
             </div>
           </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="duracao" className="text-gray-300">Duração</Label>
-                  <Input
-                    id="duracao"
-                    name="duracao"
-                    defaultValue={editingServico?.tempo_entrega}
-                    placeholder="ex: 2 horas"
-                    className="bg-gray-800 border-gray-700 text-white"
+            </div>
+            </div>
+
+              {/* Seção 3: Categoria e Fornecedor */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Tag className="w-5 h-5 text-purple-400" />
+                  <h3 className="text-lg font-semibold text-white">Categoria e Fornecedor</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="categoria" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                      Categoria
+                    </Label>
+                    <CategoriaSelect
+                      value={editingServico?.categoria?.id?.toString() || ''}
+                      onValueChange={() => {}} // Função vazia pois o componente atualiza automaticamente
+                      placeholder="Selecione a categoria"
+                      categorias={categoriasProduto}
+                      tipo="servico"
+                    />
+                    {/* Campo hidden para manter compatibilidade com FormData */}
+                    <input 
+                      type="hidden" 
+                      name="categoria"
+                      defaultValue={editingServico?.categoria?.id?.toString() || ''}
                   />
             </div>
-                <div>
-                  <Label htmlFor="fornecedor" className="text-gray-300">Fornecedor</Label>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fornecedor" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                      Fornecedor
+                    </Label>
                   <Input
                     id="fornecedor"
                     name="fornecedor"
-                    defaultValue={editingServico?.fornecedor}
-                    className="bg-gray-800 border-gray-700 text-white"
+                      defaultValue={editingServico?.fornecedor || ''}
+                      placeholder="Nome do fornecedor"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500/20 transition-all"
                   />
             </div>
           </div>
-              <div>
-                <Label htmlFor="categoria" className="text-gray-300">Categoria</Label>
-                <Select
-                  name="categoria"
-                  defaultValue={editingServico?.categoria?.id?.toString() || ''}
-                >
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-                    <SelectValue placeholder="Selecione a categoria" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
-                    {categoriasProduto.length === 0 ? (
-                      <SelectItem value="" disabled>Nenhuma categoria disponível</SelectItem>
-                    ) : (
-                      categoriasProduto.map(cat => (
-                        <SelectItem key={cat.id} value={cat.id.toString()} className="text-white hover:bg-gray-700">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.cor }}></div>
-                            {cat.nome}
                           </div>
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
+
+              {/* Seção 4: Configurações */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-gray-700">
+                  <Settings className="w-5 h-5 text-yellow-400" />
+                  <h3 className="text-lg font-semibold text-white">Configurações</h3>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="status" className="text-gray-300">Status</Label>
-                  <Select
-                    name="status"
-                    defaultValue={editingServico?.status || 'ativo'}
-                  >
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="status" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                      Status do Serviço
+                    </Label>
+                    <Select name="status" defaultValue={editingServico?.status || 'ativo'}>
+                      <SelectTrigger className="h-9 px-3 py-1.5 bg-gray-800/50 border-gray-600 text-white focus:border-yellow-500 focus:ring-yellow-500/20 transition-all">
                       <SelectValue placeholder="Selecione o status" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="ativo" className="text-white hover:bg-gray-700">Ativo</SelectItem>
-                      <SelectItem value="inativo" className="text-white hover:bg-gray-700">Inativo</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="ativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">✅ Ativo</SelectItem>
+                        <SelectItem value="inativo" className="text-white hover:bg-gray-700 focus:bg-gray-700">⏸️ Inativo</SelectItem>
+                        <SelectItem value="encerrado" className="text-white hover:bg-gray-700 focus:bg-gray-700">⚠️ Encerrado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex items-center space-x-2">
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="duracao" className="text-gray-300 font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 bg-cyan-500 rounded-full"></span>
+                      Duração
+                    </Label>
+                    <Input
+                      id="duracao"
+                      name="duracao"
+                      defaultValue={editingServico?.tempo_entrega}
+                      placeholder="Ex: 2 horas"
+                      className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-cyan-500 focus:ring-cyan-500/20 transition-all"
+                />
+              </div>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700/50">
                   <input 
                     type="checkbox"
                     id="destaque" 
                     name="destaque"
                     defaultChecked={editingServico?.destaque}
-                    className="w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500 focus:ring-2"
+                    className="w-5 h-5 text-orange-600 bg-gray-800 border-gray-600 rounded focus:ring-orange-500 focus:ring-2 transition-all"
                   />
-                  <Label htmlFor="destaque" className="text-gray-300">Serviço em Destaque</Label>
+                  <Label htmlFor="destaque" className="text-gray-300 font-medium flex items-center gap-2 cursor-pointer">
+                    <Star className="w-4 h-4 text-orange-400" />
+                    Serviço em Destaque
+                  </Label>
+                  <span className="text-xs text-gray-500 ml-auto">Serviços em destaque aparecem com prioridade</span>
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={handleCancel} className="border-gray-600 text-gray-300">
+
+              {/* Footer com Botões */}
+              <DialogFooter className="border-t border-gray-700 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 w-full">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={handleCancel} 
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-all flex-1 sm:flex-none"
+                  >
+                    <X className="w-4 h-4 mr-2" />
               Cancelar
             </Button>
-                <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">
-                  {editingServico ? 'Atualizar' : 'Cadastrar'}
+                  <Button 
+                    type="submit" 
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white transition-all flex-1 sm:flex-none"
+                  >
+                    <Check className="w-4 h-4 mr-2" />
+                    {editingServico ? 'Atualizar Serviço' : 'Cadastrar Serviço'}
             </Button>
+                </div>
               </DialogFooter>
         </form>
           </DialogContent>
         </Dialog>
+      )}
+    </div>
+  )
+}
+
+// Componente de Select de Categoria Melhorado
+function CategoriaSelect({ 
+  value, 
+  onValueChange, 
+  placeholder = "Selecione a categoria", 
+  categorias, 
+  tipo = "produto" 
+}) {
+  const [busca, setBusca] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  
+  // Filtrar categorias baseado na busca
+  const categoriasFiltradas = categorias.filter(cat => 
+    cat.nome.toLowerCase().includes(busca.toLowerCase()) ||
+    cat.descricao?.toLowerCase().includes(busca.toLowerCase())
+  )
+  
+  // Agrupar categorias por tipo
+  const categoriasProdutos = categoriasFiltradas.filter(cat => cat.id <= 36)
+  const categoriasServicos = categoriasFiltradas.filter(cat => cat.id > 36)
+  
+  // Encontrar categoria selecionada
+  const categoriaSelecionada = categorias.find(cat => cat.id.toString() === value)
+  
+  // Função para atualizar o valor no formulário
+  const atualizarValorFormulario = (novoValor) => {
+    onValueChange(novoValor)
+    
+    // Atualizar o campo hidden do formulário
+    const form = document.querySelector('form')
+    if (form) {
+      const categoriaInput = form.querySelector('input[name="categoria"]')
+      if (categoriaInput) {
+        categoriaInput.value = novoValor
+      }
+    }
+  }
+  
+  return (
+    <div className="relative">
+      <div 
+        className="flex items-center justify-between w-full px-3 py-1.5 h-9 bg-gray-800 border border-gray-700 rounded-md text-white cursor-pointer hover:border-gray-600 transition-colors"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          {categoriaSelecionada ? (
+            <>
+              <div 
+                className="w-4 h-4 rounded-full flex-shrink-0" 
+                style={{ backgroundColor: categoriaSelecionada.cor }}
+              />
+              <span className="truncate">{categoriaSelecionada.nome}</span>
+            </>
+          ) : (
+            <span className="text-gray-400">{placeholder}</span>
+          )}
+        </div>
+        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </div>
+      
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-80 overflow-hidden">
+          {/* Campo de busca */}
+          <div className="p-2 border-b border-gray-700">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Buscar categoria..."
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="w-full pl-8 pr-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                autoFocus
+              />
+            </div>
+          </div>
+          
+          {/* Lista de categorias */}
+          <div className="max-h-64 overflow-y-auto">
+            {categoriasFiltradas.length === 0 ? (
+              <div className="p-3 text-center text-gray-400">
+                Nenhuma categoria encontrada
+              </div>
+            ) : (
+              <>
+                {/* Categorias de Produtos */}
+                {categoriasProdutos.length > 0 && (
+                  <div>
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-400 bg-gray-700/50 border-b border-gray-600">
+                      📦 PRODUTOS
+                    </div>
+                    {categoriasProdutos.map(cat => (
+                      <div
+                        key={cat.id}
+                        className={`flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 transition-colors ${
+                          value === cat.id.toString() ? 'bg-blue-600/20 border-r-2 border-blue-500' : ''
+                        }`}
+                        onClick={() => {
+                          atualizarValorFormulario(cat.id.toString())
+                          setIsOpen(false)
+                          setBusca('')
+                        }}
+                      >
+                        <div 
+                          className="w-3 h-3 rounded-full flex-shrink-0" 
+                          style={{ backgroundColor: cat.cor }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-white font-medium truncate">{cat.nome}</div>
+                          {cat.descricao && (
+                            <div className="text-xs text-gray-400 truncate">{cat.descricao}</div>
+                          )}
+                        </div>
+                        {value === cat.id.toString() && (
+                          <Check className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Categorias de Serviços */}
+                {categoriasServicos.length > 0 && (
+                  <div>
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-400 bg-gray-700/50 border-b border-gray-600">
+                      🔧 SERVIÇOS
+                    </div>
+                    {categoriasServicos.map(cat => (
+                      <div
+                        key={cat.id}
+                        className={`flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-gray-700 transition-colors ${
+                          value === cat.id.toString() ? 'bg-purple-600/20 border-r-2 border-purple-500' : ''
+                        }`}
+                        onClick={() => {
+                          atualizarValorFormulario(cat.id.toString())
+                          setIsOpen(false)
+                          setBusca('')
+                        }}
+                      >
+                        <div 
+                          className="w-3 h-3 rounded-full flex-shrink-0" 
+                          style={{ backgroundColor: cat.cor }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-white font-medium truncate">{cat.nome}</div>
+                          {cat.descricao && (
+                            <div className="text-xs text-gray-400 truncate">{cat.descricao}</div>
+                          )}
+                        </div>
+                        {value === cat.id.toString() && (
+                          <Check className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Overlay para fechar ao clicar fora */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => {
+            setIsOpen(false)
+            setBusca('')
+          }}
+        />
       )}
     </div>
   )
